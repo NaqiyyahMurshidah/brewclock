@@ -51,10 +51,10 @@ LineChartData _chartData() {
       horizontalInterval: 20,
       verticalInterval: 1,
       getDrawingHorizontalLine: (value) {
-        return FlLine(color: Colors.white.withOpacity(0.08), strokeWidth: 1);
+        return FlLine(color: Colors.white.withValues(alpha: 0.08), strokeWidth: 1);
       },
       getDrawingVerticalLine: (value) {
-        return FlLine(color: Colors.white.withOpacity(0.08), strokeWidth: 1);
+        return FlLine(color: Colors.white.withValues(alpha: 0.08), strokeWidth: 1);
       },
     ),
 

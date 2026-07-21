@@ -2,6 +2,8 @@ import 'package:brewclock/widgets/statistics/period_selector.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/statistics/stats_sum_card.dart';
 import '../../widgets/statistics/top_drink_card.dart';
+import '../../widgets/statistics/caff_sleep_chart_card.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -11,6 +13,26 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+  final caffeineSpots = [
+    FlSpot(0, 120),
+    FlSpot(1, 125),
+    FlSpot(2, 130),
+    FlSpot(3, 124),
+    FlSpot(4, 128),
+    FlSpot(5, 126),
+    FlSpot(6, 0),
+  ];
+
+  final sleepSpots = [
+    FlSpot(0, 90),
+    FlSpot(1, 92),
+    FlSpot(2, 94),
+    FlSpot(3, 89),
+    FlSpot(4, 91),
+    FlSpot(5, 93),
+    FlSpot(6, 90),
+  ];
+
   StatsPeriod _selectedPeriod = StatsPeriod.today;
   @override
   Widget build(BuildContext context) {
@@ -76,12 +98,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               const SizedBox(height: 22),
 
               //caff_sleep_card.dart
-              Container(height: 250, color: Colors.red.shade200),
+              CaffSleepChartCard(
+                caffeineSpots: caffeineSpots,
+                sleepSpots: sleepSpots,
+              ),
 
               const SizedBox(height: 22),
 
               //top_drink_card
-              TopDrinkCard(topDrinkMg: 78, caffeineType: "Latte", maxCaffeine: 200),
+              TopDrinkCard(
+                topDrinkMg: 78,
+                caffeineType: "Latte",
+                maxCaffeine: 200,
+              ),
             ],
           ),
         ),

@@ -3,6 +3,7 @@ import '../../widgets/caffeine/active_caffeine_card.dart';
 import '../../widgets/caffeine/decay_curve_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/caffeine/bedtime_forecast_card.dart';
+import '../../widgets/common/page_header.dart';
 
 class TrackerScreen extends StatelessWidget {
   const TrackerScreen({super.key});
@@ -16,40 +17,12 @@ class TrackerScreen extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: ListView(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Tracker",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Active Cafeine",
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
-                      ),
-                    ],
-                  ),
-
-                  IconButton(
-                    icon: const Icon(
-                      Icons.local_cafe,
-                      color: Colors.white,
-                      size: 80,
-                    ),
-                    onPressed: () {
-                      // Handle settings button press
-                    },
-                  ),
-                ],
+              PageHeader(
+                label: "TRACKER",
+                title: "Active Caffeine",
+                icon: Icons.local_cafe,
               ),
+
               const SizedBox(height: 24),
 
               //active caffeine card

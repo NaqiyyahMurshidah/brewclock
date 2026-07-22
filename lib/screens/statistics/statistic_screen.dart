@@ -4,6 +4,7 @@ import '../../widgets/statistics/stats_sum_card.dart';
 import '../../widgets/statistics/top_drink_card.dart';
 import '../../widgets/statistics/caff_sleep_chart_card.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../widgets/common/page_header.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -45,39 +46,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             children: [
               //start all items in the page
               //the top title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Statistics",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Thisss week",
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.bar_chart,
-                      color: Colors.white,
-                      size: 80,
-                    ),
-                    onPressed: () {
-                      // Handle settings button press
-                    },
-                  ),
-                ],
+              PageHeader(
+                label: "STATISTICS",
+                title: "This Week",
+                icon: Icons.bar_chart_outlined,
               ),
+
               const SizedBox(height: 10),
 
               //button period cars

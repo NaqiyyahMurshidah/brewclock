@@ -5,6 +5,17 @@ class AddCoffeeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text("Add Coffee")));
+    return Scaffold(
+      backgroundColor: const Color(0xFF1A1411),
+      appBar: AppBar(
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Log Coffee", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF1A1411),
+      ),
+      body: const Center(
+        child: Text("Add Coffee Page", style: TextStyle(color: Colors.white)),
+      ),
+    );
   }
 }

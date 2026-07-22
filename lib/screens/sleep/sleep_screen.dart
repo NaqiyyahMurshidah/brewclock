@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/sleep/sleep_score_card.dart';
 import '../../widgets/sleep/sleep_chart_card.dart';
+import '../../widgets/common/page_header.dart';
 
 class SleepScreen extends StatelessWidget {
   const SleepScreen({super.key});
@@ -14,48 +15,23 @@ class SleepScreen extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: ListView(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Sleep Insights",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Tonight's Forecast",
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
-                      ),
-                    ],
-                  ),
-
-                  IconButton(
-                    icon: const Icon(Icons.bedtime, color: Colors.white, size: 80),
-                    onPressed: () {
-                      // Handle settings button press
-                    },
-                  ),
-                ],
+              PageHeader(
+                label: "SLEEP INSIGHTS",
+                title: "Tonight's Forecast",
+                icon: Icons.bedtime,
               ),
 
               const SizedBox(height: 24),
 
               // Sleep Score Card
               SleepScoreCard(
-                  score: 98,
-                  quality: "Deeply Restful",
-                  bedtime: "11:00 PM",
-                  wakeTime: "7:00 AM",
-                  duration: "8h",
-                  isExpanded: true,
-               ),
+                score: 98,
+                quality: "Deeply Restful",
+                bedtime: "11:00 PM",
+                wakeTime: "7:00 AM",
+                duration: "8h",
+                isExpanded: true,
+              ),
 
               const SizedBox(height: 20),
 
@@ -69,12 +45,12 @@ class SleepScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-                    // Another Card
+              // Another Card
               Container(height: 250, color: Colors.green),
 
               const SizedBox(height: 20),
 
-                    // Another Card
+              // Another Card
               Container(height: 250, color: Colors.green),
             ],
           ),

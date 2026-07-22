@@ -84,7 +84,7 @@ LineChartData _chartData(List<FlSpot> spots) {
 
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
 
-      leftTitles:  AxisTitles(
+      leftTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 24,
@@ -92,8 +92,7 @@ LineChartData _chartData(List<FlSpot> spots) {
           getTitlesWidget: (value, meta) {
             return Text(
               "mg",
-              style: TextStyle(color: Colors.white38, fontSize: 10
-              ),
+              style: TextStyle(color: Colors.white38, fontSize: 10),
             );
           },
         ),

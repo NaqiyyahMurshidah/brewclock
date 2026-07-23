@@ -4,7 +4,7 @@ import '../screens/tracker/tracker_screen.dart';
 import '../screens/sleep/sleep_screen.dart';
 import '../screens/statistics/statistic_screen.dart';
 import '../screens/profile/profile_screen.dart';
-import '../screens/log_coffee/drink_loc.dart';
+import '../widgets/log_coffee/drink_loc_card.dart';
 import '../screens/log_coffee/home_log_coffee.dart';
 import '../screens/log_coffee/cafe_log_coffee.dart';
 
@@ -133,8 +133,12 @@ class _MainNavigationState extends State<MainNavigation> {
 
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => const HomeLogCoffee(),
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const HomeLogCoffee(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
                             ),
                           );
                         },
@@ -151,8 +155,12 @@ class _MainNavigationState extends State<MainNavigation> {
 
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => const CafeLogCoffee(),
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const CafeLogCoffee(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
                             ),
                           );
                         },

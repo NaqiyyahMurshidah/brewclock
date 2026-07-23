@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/caffeine/active_caffeine_card.dart';
-import '../../widgets/caffeine/decay_curve_card.dart';
+import '../../widgets/tracker/active_caffeine_card.dart';
+import '../../widgets/tracker/decay_curve_card.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../widgets/caffeine/bedtime_forecast_card.dart';
+import '../../widgets/tracker/bedtime_forecast_card.dart';
 import '../../widgets/common/page_header.dart';
 
 class TrackerScreen extends StatelessWidget {
@@ -30,7 +30,7 @@ class TrackerScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              //decay curve chart dummy
+              //decay curve chart  widgets/
               DecayCurveCard(
                 spots: [
                   FlSpot(0, 65),

@@ -117,10 +117,13 @@ class SleepScoreCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
+                  child: _InfoBox(title: "BEDTIME", value: bedtime),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
                   child: _InfoBox(title: "WAKE", value: wakeTime),
                 ),
                 const SizedBox(width: 12),
-
                 Expanded(
                   child: _InfoBox(title: "DURATION", value: duration),
                 ),
@@ -162,7 +165,7 @@ class _InfoBox extends StatelessWidget {
             value,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
           ),

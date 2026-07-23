@@ -3,7 +3,8 @@ import '../../widgets/caffeine/active_caffeine_card.dart';
 import '../../widgets/sleep/sleep_score_card.dart';
 import '../../widgets/caffeine/caffeine_limit_card.dart';
 import '../../widgets/caffeine/today_intake_card.dart';
-import '../add_coffee/add_coffee_screen.dart';
+import '../add_coffee/cafe_log_coffee.dart';
+import '../add_coffee/drink_loc.dart';
 //crossAxisAllignment.start = make it aligns text to the left (start)
 
 class HomeScreen extends StatelessWidget {
@@ -54,14 +55,19 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 30),
                 const ActiveCaffeineCard(),
+
+                // drink_loc.dart card at /widget/common
                 const SizedBox(height: 20),
-                const SleepScoreCard(
-                  score: 98,
-                  quality: "Deeply Restful",
-                  bedtime: "11:00 PM",
-                  wakeTime: "7:00 AM",
-                  duration: "8h",
-                ),
+                DrinkLocation(),
+
+                //sleep score card
+                // const SleepScoreCard(
+                //   score: 98,
+                //   quality: "Deeply Restful",
+                //   bedtime: "11:00 PM",
+                //   wakeTime: "7:00 AM",
+                //   duration: "8h",
+                // ),
                 const SizedBox(height: 20),
                 const CaffeineLimitCard(caffeine: 23, limit: 400),
 
@@ -74,16 +80,6 @@ class HomeScreen extends StatelessWidget {
             ), //arrange item vertically
           ),
         ),
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddCoffeeScreen()),
-          );
-        },
-        child: const Icon(Icons.add),
       ),
     ); //Scaffold skelaton of the screen
   }

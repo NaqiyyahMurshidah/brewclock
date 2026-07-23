@@ -14,10 +14,7 @@ class BrewClockApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'BrewClock',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF1A1411),
-        canvasColor: const Color(0xFF1A1411),
-      ),
+      theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF1A1411)),
       home: const MainNavigation(),
     );
   }

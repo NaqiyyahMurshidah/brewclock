@@ -54,7 +54,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
               const SizedBox(height: 10),
 
-              //button period cars
+              //button period widget/statistics/period_selector.dart
               PeriodSelector(
                 selectedPeriod: _selectedPeriod,
                 onChanged: (period) {
@@ -69,7 +69,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               //stat_cum_card
               // StatsSumCard(avgCaffeine: 12, avgSleepScore: 65),
 
-              // quality score card
+              // quality score card widget/
               const SizedBox(height: 22),
                SleepScoreCard(
                 score: 98,
@@ -88,6 +88,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 topDrinkMg: 78,
                 caffeineType: "Latte",
                 maxCaffeine: 200,
+                avgCaffeine: 65,
               ),
 
               const SizedBox(height: 22),

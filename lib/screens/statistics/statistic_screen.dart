@@ -4,7 +4,7 @@ import '../../widgets/statistics/top_drink_card.dart';
 import '../../widgets/statistics/caff_sleep_chart_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/common/page_header.dart';
-import '../../widgets/sleep/sleep_score_card.dart';
+import '../../widgets/statistics/sleep_score_card.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});

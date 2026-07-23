@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../widgets/caffeine/active_caffeine_card.dart';
-import '../../widgets/sleep/sleep_score_card.dart';
-import '../../widgets/caffeine/caffeine_limit_card.dart';
-import '../../widgets/caffeine/today_intake_card.dart';
-import '../../widgets/log_coffee/drink_loc_card.dart';
+import '../../widgets/tracker/active_caffeine_card.dart';
+import '../../widgets/statistics/sleep_score_card.dart';
+import '../../widgets/home/caffeine_limit_card.dart';
+import '../../widgets/home/today_intake_card.dart';
+import '../../widgets/home/drink_loc_card.dart';
 //crossAxisAllignment.start = make it aligns text to the left (start)
 
 class HomeScreen extends StatelessWidget {

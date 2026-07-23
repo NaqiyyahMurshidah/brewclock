@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AddCoffeeScreen extends StatelessWidget {
-  const AddCoffeeScreen({super.key});
+class HomeLogCoffee extends StatelessWidget {
+  const HomeLogCoffee({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class AddCoffeeScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF1A1411),
       ),
       body: const Center(
-        child: Text("Add Coffee Page", style: TextStyle(color: Colors.white)),
+        child: Text("home manual add Coffee Page", style: TextStyle(color: Colors.white)),
       ),
     );
   }

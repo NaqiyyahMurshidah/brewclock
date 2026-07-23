@@ -1,10 +1,10 @@
 import 'package:brewclock/widgets/statistics/period_selector.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/statistics/stats_sum_card.dart';
 import '../../widgets/statistics/top_drink_card.dart';
 import '../../widgets/statistics/caff_sleep_chart_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/common/page_header.dart';
+import '../../widgets/sleep/sleep_score_card.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -48,7 +48,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               //the top title
               PageHeader(
                 label: "STATISTICS",
-                title: "This Week",
+                title: "Sleep and Caffeine statistic",
                 icon: Icons.bar_chart_outlined,
               ),
 
@@ -67,7 +67,28 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               const SizedBox(height: 20),
 
               //stat_cum_card
-              StatsSumCard(avgCaffeine: 12, avgSleepScore: 65),
+              // StatsSumCard(avgCaffeine: 12, avgSleepScore: 65),
+
+              // quality score card
+              const SizedBox(height: 22),
+               SleepScoreCard(
+                score: 98,
+                quality: "Deeply Restful",
+                bedtime: "11:00 PM",
+                wakeTime: "7:00 AM",
+                duration: "8h",
+                isExpanded: true,
+              ),
+
+              //caffeine average card
+              const SizedBox(height: 20),
+
+              //top_drink_card
+              TopDrinkCard(
+                topDrinkMg: 78,
+                caffeineType: "Latte",
+                maxCaffeine: 200,
+              ),
 
               const SizedBox(height: 22),
 
@@ -78,13 +99,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
 
               const SizedBox(height: 22),
-
-              //top_drink_card
-              TopDrinkCard(
-                topDrinkMg: 78,
-                caffeineType: "Latte",
-                maxCaffeine: 200,
-              ),
             ],
           ),
         ),

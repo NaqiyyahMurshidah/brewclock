@@ -30,7 +30,7 @@ class TrackerScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              //decay curve chart  widgets/
+              //decay curve chart  widgets/tracker
               DecayCurveCard(
                 spots: [
                   FlSpot(0, 65),
@@ -44,7 +44,7 @@ class TrackerScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              //bedtime forecast card
+              //bedtime forecast card widgets/tracker
               BedtimeForecastCard(caffeineLeft: 12, bedTime: "10:30 PM"),
             ],
           ),

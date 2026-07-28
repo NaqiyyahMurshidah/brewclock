@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../screens/log_coffee/cafe_log_coffee.dart';
-import '../../screens/log_coffee/home_log_coffee.dart';
+import '../../screens/log_coffee/cafe_log_screen.dart';
+import '../../screens/log_coffee/home_log_screen.dart';
 
 class DrinkLocation extends StatefulWidget {
   const DrinkLocation({super.key});

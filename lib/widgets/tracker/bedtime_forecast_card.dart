@@ -39,7 +39,7 @@ class BedtimeForecastCard extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 34,
-                  fontWeight: FontWeight(30),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 2),

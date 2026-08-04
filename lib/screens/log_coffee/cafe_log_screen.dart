@@ -270,7 +270,7 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
 
               const SizedBox(height: 20),
 
-              //pick size
+              //pick shots
               Text(
                 "Shot : ",
                 style: TextStyle(color: Colors.white, fontSize: 20),

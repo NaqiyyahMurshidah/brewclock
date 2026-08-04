@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/selection_card.dart';
 
-class HomeLogCoffee extends StatelessWidget {
+class HomeLogCoffee extends StatefulWidget {
   const HomeLogCoffee({super.key});
 
   @override
+  State<HomeLogCoffee> createState() => _HomeLogCoffeeState();
+}
+
+class _HomeLogCoffeeState extends State<HomeLogCoffee> {
+  String? selectedPrep;
+  String? selectedBrand;
+  TimeOfDay? selectedTime;
+
+  int quantity = 1;
+
+  @override
   Widget build(BuildContext context) {
+    final Map<String, List<String>> brandOptions = {
+      "Instant Coffee": ["Nescafé Classic", "Maxwell House", "Moccona"],
+      "Ground Coffee": ["Starbucks", "Lavazza", "Illy", "Other"],
+      "Coffee Sachet": ["OldTown", "Aik Cheong", "Ah Huat", "Nescafé"],
+      "Coffee Capsule": ["Nespresso", "Starbucks", "L'OR", "Dolce Gusto"],
+      "Espresso Machine": ["Lavazza", "Illy", "Starbucks", "Custom Beans"],
+    };
+
+    final bool canAddCoffee =
+        selectedPrep != null && selectedBrand != null && selectedTime != null;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       appBar: AppBar(
@@ -13,9 +36,182 @@ class HomeLogCoffee extends StatelessWidget {
         title: const Text("Log Coffee", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF1A1411),
       ),
-      body: const Center(
-        child: Text("home manual add Coffee Page", style: TextStyle(color: Colors.white)),
+
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+
+          child: ListView(
+            children: [
+              //prep coffe section
+              const Text(
+                "How did you prepare your coffee?",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                children: [
+                  Expanded(child: _prepCard("Instant Coffee")),
+                  const SizedBox(width: 12),
+
+                  Expanded(child: _prepCard("Ground Coffee")),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                children: [
+                  Expanded(child: _prepCard("Coffee Sachet")),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(child: _prepCard("Coffee Capsule")),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              _prepCard("Espresso Machine"),
+
+              if (selectedPrep != null) ...[
+                const SizedBox(height: 28),
+
+                const Text(
+                  "Brand",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                ...brandOptions[selectedPrep]!.map((brand) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _brandCard(brand),
+                  );
+                }),
+              ],
+
+              const SizedBox(height: 15),
+
+              //time pick
+              InkWell(
+                onTap: _pickTime,
+                borderRadius: BorderRadius.circular(18),
+
+                child: Container(
+                  width: 330,
+                  height: 65,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3A291F),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectedTime == null
+                            ? "Select time"
+                            : selectedTime!.format(context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const Icon(
+                        Icons.access_time,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: canAddCoffee ? _addCoffee : null,
+                  child: const Text("Add Coffee"),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  Widget _prepCard(String prep) {
+    return SelectionCard(
+      label: prep,
+      selected: selectedPrep == prep,
+
+      onTap: () {
+        setState(() {
+          if (selectedPrep == prep) {
+            selectedPrep = null;
+            selectedBrand = null;
+          } else {
+            selectedPrep = prep;
+
+            //reset previous brand
+            selectedBrand = null;
+          }
+        });
+      },
+    );
+  }
+
+  Widget _brandCard(String brand) {
+    return SelectionCard(
+      label: brand,
+      selected: selectedBrand == brand,
+      onTap: () {
+        setState(() {
+          selectedBrand = selectedBrand == brand ? null : brand;
+        });
+      },
+    );
+  }
+
+  Future<void> _pickTime() async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+    }
+  }
+
+  void _addCoffee() {
+    debugPrint("Preparation: $selectedPrep");
+    debugPrint("Brand: $selectedBrand");
+    debugPrint("Quantity: $quantity");
+    debugPrint("Time: $selectedTime");
+
+    // Firebase later
   }
 }

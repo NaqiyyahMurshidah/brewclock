@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class SelectionCard extends StatelessWidget {
-  final String label;
-  final int value;
-  final String unit;
+  final String? label;
+  final int? value;
+  final String? unit;
   final bool selected;
   final VoidCallback onTap;
 
   const SelectionCard({
     super.key,
-    required this.label,
-    required this.value,
-    required this.unit,
+    this.label,
+    this.value,
+    this.unit,
     required this.selected,
     required this.onTap,
   });
@@ -46,7 +46,7 @@ class SelectionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                label,
+                "$label",
                 style: TextStyle(
                   color: selected ? const Color(0xFF1A1411) : Colors.white,
                   fontSize: 17,
@@ -54,6 +54,9 @@ class SelectionCard extends StatelessWidget {
                 ),
               ),
 
+              //only show if value exist 
+
+              if (value != null) ...[
               // const SizedBox(height: 2),
               Row(
                 children: [
@@ -66,7 +69,7 @@ class SelectionCard extends StatelessWidget {
                   ),
                    const SizedBox(width: 2),
                   Text(
-                    unit,
+                    "$unit",
                     style: TextStyle(
                       color: selected ? Colors.black87 : Colors.white70,
                       fontSize: 14,
@@ -74,6 +77,7 @@ class SelectionCard extends StatelessWidget {
                   ),
                 ],
               ),
+              ]
             ],
           ),
         ),

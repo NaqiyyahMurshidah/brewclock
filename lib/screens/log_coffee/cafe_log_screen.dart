@@ -1,5 +1,7 @@
+import 'package:brewclock/services/caffeine_log_store.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
+import '../../models/coffee_log.dart';
 
 class CafeLogCoffee extends StatefulWidget {
   const CafeLogCoffee({super.key});
@@ -374,6 +376,19 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
   }
 
   void _addCoffee() {
+    final log = CaffeineLog(
+      source: cafe,
+      drinkName: "Latte",
+      size: "12 oz",
+      shots: 2,
+      caffeineMg: 126,
+      consumedAt: DateTime.now(),
+    );
+
+    CoffeeLogStore.add(log);
+
+    debugPrint("Total logs: ${CoffeeLogStore.logs.length}");
+
     //later calculation caffeine
     debugPrint("Drink: $selectedDrink");
     debugPrint("Size: $selectedSize");

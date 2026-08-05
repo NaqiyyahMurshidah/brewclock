@@ -12,17 +12,24 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
   String? selectedPrep;
   String? selectedBrand;
   TimeOfDay? selectedTime;
-
-  int quantity = 1;
+  int? selectedAmount;
 
   @override
   Widget build(BuildContext context) {
     final Map<String, List<String>> brandOptions = {
       "Instant Coffee": ["Nescafé Classic", "Maxwell House", "Moccona"],
-      "Ground Coffee": ["Starbucks", "Lavazza", "Illy", "Other"],
+      "Ground Coffee": ["Starbucks", "Lavazza", "Illy"],
       "Coffee Sachet": ["OldTown", "Aik Cheong", "Ah Huat", "Nescafé"],
       "Coffee Capsule": ["Nespresso", "Starbucks", "L'OR", "Dolce Gusto"],
       "Espresso Machine": ["Lavazza", "Illy", "Starbucks", "Custom Beans"],
+    };
+
+    final Map<String, String> amountUnits = {
+      "Instant Coffee": "teaspoon",
+      "Ground Coffee": "tablespoon",
+      "Coffee Sachet": "sachet",
+      "Coffee Capsule": "capsule",
+      "Espresso Machine": "shots",
     };
 
     final bool canAddCoffee =
@@ -43,9 +50,9 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
 
           child: ListView(
             children: [
-              //prep coffe section
+              //prep coffe section How did you prepare your coffee?
               const Text(
-                "How did you prepare your coffee?",
+                "Preparation :",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -83,8 +90,9 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
               if (selectedPrep != null) ...[
                 const SizedBox(height: 28),
 
+                //select brand next
                 const Text(
-                  "Brand",
+                  "Brand :",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -102,7 +110,58 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
                 }),
               ],
 
-              const SizedBox(height: 15),
+              if (selectedPrep != null) ...[
+                const SizedBox(height: 10),
+
+                Text(
+                  "${amountUnits[selectedPrep]} Amount :",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                Row(
+                  children: List.generate(4, (index) {
+                    final amountValue = index + 1;
+
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: amountValue == 4 ? 0 : 12,
+                        ),
+                        child: SelectionCard(
+                          label: "$amountValue",
+                          selected: selectedAmount == amountValue,
+                          onTap: () {
+                            setState(() {
+                              selectedAmount = selectedAmount == amountValue
+                                  ? null
+                                  : amountValue;
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+
+              //amount (spoon/sachet/capsule)
+              const SizedBox(height: 12),
+              Text(
+                "Time : ",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
 
               //time pick
               InkWell(
@@ -209,9 +268,8 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
   void _addCoffee() {
     debugPrint("Preparation: $selectedPrep");
     debugPrint("Brand: $selectedBrand");
-    debugPrint("Quantity: $quantity");
     debugPrint("Time: $selectedTime");
-
+    debugPrint("Amount: $selectedAmount");
     // Firebase later
   }
 }

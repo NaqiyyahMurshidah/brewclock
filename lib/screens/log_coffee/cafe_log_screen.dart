@@ -2,6 +2,7 @@ import 'package:brewclock/services/caffeine_log_store.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
+import '../../services/caffeine_calculator.dart';
 
 class CafeLogCoffee extends StatefulWidget {
   const CafeLogCoffee({super.key});
@@ -376,24 +377,66 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
   }
 
   void _addCoffee() {
-    final log = CaffeineLog(
-      source: cafe,
-      drinkName: "Latte",
-      size: "12 oz",
-      shots: 2,
-      caffeineMg: 126,
-      consumedAt: DateTime.now(),
+    //check
+    if (selectedDrink == null ||
+        selectedSize == null ||
+        selectedShots == null ||
+        selectedTime == null) {
+      return;
+    }
+
+    //convert selected size into OZ
+    final int sizeOz = switch (selectedSize!) {
+      "Small" => 4,
+      "Medium" => 8,
+      "Large" => 12,
+      _ => 0,
+    };
+
+    //caffeine calculation (might changes):
+    //63mg for each espresso shots
+    final int calculatedCaffeineMg = CaffeineCalculator.calculatedCafeCoffee(
+      drink: selectedDrink!,
+      size: selectedSize!,
+      shots: selectedShots!,
     );
 
+    //combine today's date with the time selected
+    final DateTime now = DateTime.now();
+
+    final DateTime consumedAt = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      selectedTime!.hour,
+      selectedTime!.minute,
+    );
+
+    //create actual log using user's selection
+    final CaffeineLog log = CaffeineLog(
+      source: CoffeeSource.cafe,
+      drinkName: selectedDrink!,
+      size: selectedSize!,
+      sizeOz: sizeOz,
+      shots: selectedShots!,
+      caffeineMg: calculatedCaffeineMg,
+      consumedAt: consumedAt,
+    );
+
+    //save locally
     CoffeeLogStore.add(log);
 
+    debugPrint("Coffee added successfully");
+    debugPrint("Drink: ${log.drinkName}");
+    debugPrint("Size: ${log.size}");
+    debugPrint("Size oz: ${log.sizeOz}");
+    debugPrint("Shots: ${log.shots}");
+    debugPrint("Caffeine: ${log.caffeineMg} mg");
+    debugPrint("Consumed at: ${log.consumedAt}");
     debugPrint("Total logs: ${CoffeeLogStore.logs.length}");
 
-    //later calculation caffeine
-    debugPrint("Drink: $selectedDrink");
-    debugPrint("Size: $selectedSize");
-    debugPrint("Shots: $selectedShots");
-    debugPrint("Time: $selectedTime");
+    // Close Cafe Log page after saving
+    Navigator.pop(context);
   }
 
   Widget _shotBox(int shots) {

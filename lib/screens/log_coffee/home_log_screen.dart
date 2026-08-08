@@ -1,5 +1,8 @@
+import 'package:brewclock/services/caffeine_log_store.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
+import '../../services/caffeine_calculator.dart';
+import '../../models/coffee_log.dart';
 
 class HomeLogCoffee extends StatefulWidget {
   const HomeLogCoffee({super.key});
@@ -33,7 +36,11 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
     };
 
     final bool canAddCoffee =
-        selectedPrep != null && selectedBrand != null && selectedTime != null;
+        selectedPrep != null &&
+        selectedBrand != null &&
+        selectedTime != null &&
+        selectedAmount != null;
+    ;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
@@ -266,10 +273,47 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
   }
 
   void _addCoffee() {
-    debugPrint("Preparation: $selectedPrep");
-    debugPrint("Brand: $selectedBrand");
-    debugPrint("Time: $selectedTime");
-    debugPrint("Amount: $selectedAmount");
-    // Firebase later
+    if (selectedPrep == null ||
+        selectedBrand == null ||
+        selectedAmount == null ||
+        selectedTime == null) {
+      return;
+    }
+
+    final int calculatedCaffeineMg = CaffeineCalculator.calculateHomeCoffee(
+      prep: selectedPrep!,
+      brand: selectedBrand!,
+      amount: selectedAmount!,
+    );
+
+    final DateTime now = DateTime.now();
+
+    final DateTime consumedAt = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      selectedTime!.hour,
+      selectedTime!.minute,
+    );
+
+    final CaffeineLog log = CaffeineLog.home(
+      preparation: selectedPrep!,
+      brand: selectedBrand!,
+      quantity: selectedAmount!,
+      caffeineMg: calculatedCaffeineMg,
+      consumedAt: consumedAt,
+    );
+
+    CoffeeLogStore.add(log);
+
+    debugPrint("Home coffee added!");
+    debugPrint("Preparation: ${log.preparation}");
+    debugPrint("Brand: ${log.brand}");
+    debugPrint("Amount: ${log.quantity}");
+    debugPrint("Caffeine: ${log.caffeineMg} mg");
+    debugPrint("Time: ${log.consumedAt}");
+
+    Navigator.pop(context);
+
   }
 }

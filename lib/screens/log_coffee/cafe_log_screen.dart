@@ -395,7 +395,7 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
 
     //caffeine calculation (might changes):
     //63mg for each espresso shots
-    final int calculatedCaffeineMg = CaffeineCalculator.calculatedCafeCoffee(
+    final int calculatedCaffeineMg = CaffeineCalculator.calculateCafeCoffee(
       drink: selectedDrink!,
       size: selectedSize!,
       shots: selectedShots!,

@@ -436,7 +436,7 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
     debugPrint("Total logs: ${CoffeeLogStore.logs.length}");
 
     // Close Cafe Log page after saving
-    Navigator.pop(context);
+    Navigator.pop(context,true); //true means successfully added
   }
 
   Widget _shotBox(int shots) {

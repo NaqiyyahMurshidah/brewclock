@@ -313,7 +313,7 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
     debugPrint("Caffeine: ${log.caffeineMg} mg");
     debugPrint("Time: ${log.consumedAt}");
 
-    Navigator.pop(context);
+    Navigator.pop(context, true);
 
   }
 }

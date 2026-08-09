@@ -27,8 +27,8 @@ class _DrinkLocationState extends State<DrinkLocation> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 overlayColor: WidgetStateProperty.all(Colors.transparent),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  final result = await Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -37,6 +37,10 @@ class _DrinkLocationState extends State<DrinkLocation> {
                       reverseTransitionDuration: Duration.zero,
                     ),
                   );
+
+                  if (result == true) {
+                    setState(() {});
+                  }
                 },
                 child: Ink(
                   height: 80,
@@ -67,8 +71,8 @@ class _DrinkLocationState extends State<DrinkLocation> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 overlayColor: WidgetStateProperty.all(Colors.transparent),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  final result = await Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -77,6 +81,10 @@ class _DrinkLocationState extends State<DrinkLocation> {
                       reverseTransitionDuration: Duration.zero,
                     ),
                   );
+
+                  if (result == true) {
+                    setState(() {});
+                  }
                 },
                 child: Ink(
                   height: 80,

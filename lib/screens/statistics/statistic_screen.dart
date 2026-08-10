@@ -5,6 +5,8 @@ import '../../widgets/statistics/caff_sleep_chart_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/common/page_header.dart';
 import '../../widgets/statistics/sleep_score_card.dart';
+import '../../services/caffeine_log_store.dart';
+import '../../services/statistics_service.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -14,16 +16,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  final caffeineSpots = [
-    FlSpot(0, 120),
-    FlSpot(1, 125),
-    FlSpot(2, 130),
-    FlSpot(3, 124),
-    FlSpot(4, 128),
-    FlSpot(5, 126),
-    FlSpot(6, 0),
-  ];
-
   final sleepSpots = [
     FlSpot(0, 90),
     FlSpot(1, 92),
@@ -37,6 +29,44 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   StatsPeriod _selectedPeriod = StatsPeriod.today;
   @override
   Widget build(BuildContext context) {
+    final logs = CoffeeLogStore.logs;
+
+    final String periodName = switch (_selectedPeriod) {
+      StatsPeriod.today => "today",
+      StatsPeriod.week => "week",
+      StatsPeriod.month => "month",
+    };
+
+    final filteredLogs = StatisticsService.filterLogs(
+      logs: logs,
+      now: DateTime.now(),
+      period: periodName,
+    );
+
+      final List<FlSpot> caffeineSpots = List.generate(7, (index) {
+      final day = DateTime.now().subtract(Duration(days: 6 - index));
+
+      final total = filteredLogs
+          .where(
+            (log) =>
+                log.consumedAt.year == day.year &&
+                log.consumedAt.month == day.month &&
+                log.consumedAt.day == day.day,
+          )
+          .fold<int>(0, (sum, log) => sum + log.caffeineMg);
+
+      return FlSpot(index.toDouble(), total.toDouble());
+    });
+
+    final double avgCaffeine = StatisticsService.averageCaffeine(filteredLogs);
+
+    final String topDrink = StatisticsService.topDrink(filteredLogs);
+
+    final int topDrinkMg = StatisticsService.topDrinkCaffeine(
+      filteredLogs,
+      topDrink,
+    );
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
@@ -71,7 +101,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
               // quality score card widget/
               const SizedBox(height: 22),
-               SleepScoreCard(
+              SleepScoreCard(
                 score: 98,
                 quality: "Deeply Restful",
                 bedtime: "11:00 PM",
@@ -85,10 +115,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
               //top_drink_card
               TopDrinkCard(
-                topDrinkMg: 78,
-                caffeineType: "Latte",
+                topDrinkMg: topDrinkMg,
+                caffeineType: topDrink,
                 maxCaffeine: 200,
-                avgCaffeine: 65,
+                avgCaffeine: avgCaffeine.round(),
               ),
 
               const SizedBox(height: 22),

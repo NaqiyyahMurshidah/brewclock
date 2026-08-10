@@ -42,7 +42,7 @@ class CaffeineLimitCard extends StatelessWidget {
             const SizedBox(height: 14),
 
             LinearProgressIndicator(
-              value: caffeine / limit,
+              value: (caffeine / limit).clamp(0.0, 1.0),
               minHeight: 8,
               backgroundColor: Color(0xFF5B4A3E),
               valueColor: AlwaysStoppedAnimation(Color(0xFFD9B88C)),

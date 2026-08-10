@@ -127,10 +127,10 @@ class _MainNavigationState extends State<MainNavigation> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(sheetContext);
 
-                          Navigator.push(
+                          final result = await Navigator.push(
                             context,
                             PageRouteBuilder(
                               pageBuilder:
@@ -140,6 +140,10 @@ class _MainNavigationState extends State<MainNavigation> {
                               reverseTransitionDuration: Duration.zero,
                             ),
                           );
+
+                          if (result == true) {
+                            setState(() {});
+                          }
                         },
                         child: const Text("Home"),
                       ),
@@ -149,10 +153,10 @@ class _MainNavigationState extends State<MainNavigation> {
 
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(sheetContext);
 
-                          Navigator.push(
+                          final result = await Navigator.push(
                             context,
                             PageRouteBuilder(
                               pageBuilder:
@@ -162,6 +166,11 @@ class _MainNavigationState extends State<MainNavigation> {
                               reverseTransitionDuration: Duration.zero,
                             ),
                           );
+
+                          //If coffee was successfully added, rebuild MainNavigation/HomeScreen
+                          if (result == true) {
+                            setState(() {});
+                          }
                         },
                         child: const Text("Cafe"),
                       ),

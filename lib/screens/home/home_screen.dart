@@ -3,16 +3,43 @@ import '../../widgets/tracker/active_caffeine_card.dart';
 import '../../widgets/home/caffeine_limit_card.dart';
 import '../../widgets/home/today_intake_card.dart';
 import '../../widgets/home/drink_loc_card.dart';
+import '../../services/caffeine_log_store.dart';
+import '../../services/active_caffeine_calc.dart';
 //crossAxisAllignment.start = make it aligns text to the left (start)
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    final logs = [
-      CoffeeLog(drinkName: "Espresso", caffeine: 64, time: "1:38 AM"),
-    ];
+    //take data from caffeelogstore
+    final logs = CoffeeLogStore.logs;
+
+    final DateTime now = DateTime.now();
+
+    //total caffeine consumed today
+    final int todayCaffeine = logs
+        .where(
+          (log) =>
+              log.consumedAt.year == now.year &&
+              log.consumedAt.month == now.month &&
+              log.consumedAt.day == now.day,
+        )
+        .fold(0, (total, log) => total + log.caffeineMg);
+
+    //its from user profile / settings
+    const int caffeineLimit = 400;
+
+    final double activeCaffeine =
+        ActiveCaffeineCalc.calculateTotalActivateCaffeine(
+          logs: logs,
+          now: DateTime.now(),
+        );
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
@@ -51,8 +78,12 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
+                //widgets/active_caffeine_card.dart
                 const SizedBox(height: 30),
-                const ActiveCaffeineCard(),
+                ActiveCaffeineCard(
+                  caffeine: activeCaffeine.round(),
+                  limit: caffeineLimit,
+                ),
 
                 // drink_loc.dart card at /widget/common
                 const SizedBox(height: 20),
@@ -67,7 +98,10 @@ class HomeScreen extends StatelessWidget {
                 //   duration: "8h",
                 // ),
                 const SizedBox(height: 20),
-                const CaffeineLimitCard(caffeine: 23, limit: 400),
+                CaffeineLimitCard(
+                  caffeine: todayCaffeine,
+                  limit: caffeineLimit,
+                ),
 
                 // today's intake
                 const SizedBox(height: 14),

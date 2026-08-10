@@ -4,12 +4,22 @@ import '../../widgets/tracker/decay_curve_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/tracker/bedtime_forecast_card.dart';
 import '../../widgets/common/page_header.dart';
+import '../../services/active_caffeine_calc.dart';
+import '../../services/caffeine_log_store.dart';
 
 class TrackerScreen extends StatelessWidget {
   const TrackerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final logs = CoffeeLogStore.logs;
+
+    final double activeCaffeine =
+        ActiveCaffeineCalc.calculateTotalActivateCaffeine(
+          logs: logs,
+          now: DateTime.now(),
+        );
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
@@ -26,7 +36,7 @@ class TrackerScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               //active caffeine card
-              const ActiveCaffeineCard(),
+              ActiveCaffeineCard(caffeine: activeCaffeine.round(), limit: 400),
 
               const SizedBox(height: 24),
 

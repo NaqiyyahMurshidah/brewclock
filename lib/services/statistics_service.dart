@@ -1,6 +1,4 @@
 import '../models/coffee_log.dart';
-import 'package:fl_chart/fl_chart.dart';
-
 
 class StatisticsService {
   static List<CaffeineLog> filterLogs({

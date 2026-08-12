@@ -1,3 +1,4 @@
+import 'package:brewclock/models/sleep_log.dart';
 import 'package:brewclock/widgets/statistics/period_selector.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/statistics/top_drink_card.dart';
@@ -29,7 +30,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   StatsPeriod _selectedPeriod = StatsPeriod.today;
   @override
   Widget build(BuildContext context) {
-    final logs = CoffeeLogStore.logs;
+    final coffeeLogs = CoffeeLogStore.logs;
 
     final String periodName = switch (_selectedPeriod) {
       StatsPeriod.today => "today",
@@ -37,13 +38,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       StatsPeriod.month => "month",
     };
 
+    //the filter for period
     final filteredLogs = StatisticsService.filterLogs(
-      logs: logs,
+      logs: coffeeLogs,
       now: DateTime.now(),
       period: periodName,
     );
 
-      final List<FlSpot> caffeineSpots = List.generate(7, (index) {
+    final List<FlSpot> caffeineSpots = List.generate(7, (index) {
       final day = DateTime.now().subtract(Duration(days: 6 - index));
 
       final total = filteredLogs

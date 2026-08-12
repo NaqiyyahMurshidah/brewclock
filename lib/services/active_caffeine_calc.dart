@@ -1,5 +1,7 @@
 // calculate how much caffeine remains based on how log ago it was consumed
 import 'dart:math';
+import 'package:fl_chart/fl_chart.dart';
+
 import '../models/coffee_log.dart';
 
 class ActiveCaffeineCalc {
@@ -25,5 +27,28 @@ class ActiveCaffeineCalc {
     }
 
     return total;
+  }
+
+  static List<FlSpot> generateDecayCurve({
+    required List<CaffeineLog> logs,
+    required DateTime startTime,
+    int hoursToShow = 12,
+    double halfLifeHours = 5.0,
+  }) {
+    final List<FlSpot> spots = [];
+
+    for (int hour = 0; hour <= hoursToShow; hour++) {
+      final DateTime pointTime = startTime.add(Duration(hours: hour));
+
+      final double caffeineAtPoint = calculateTotalActivateCaffeine(
+        logs: logs,
+        now: pointTime,
+        halfLifeHours: halfLifeHours,
+      );
+
+      spots.add(FlSpot(hour.toDouble(), caffeineAtPoint));
+    }
+
+    return spots;
   }
 }

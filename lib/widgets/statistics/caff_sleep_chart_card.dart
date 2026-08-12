@@ -39,8 +39,67 @@ class CaffSleepChartCard extends StatelessWidget {
             height: 220,
             child: LineChart(_chartData(caffeineSpots, sleepSpots)),
           ), //this is where we call the chart function
+
+          const SizedBox(height: 15),
+
+          //chart labels
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _ChartLegend(color: Color(0xFFD8B17B), label: "Caffeine (mg)"),
+
+              SizedBox(width: 24),
+
+              _ChartLegend(color: Colors.cyan, label: "Sleep score"),
+            ],
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _ChartLegend extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _ChartLegend({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 28,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(height: 3, color: color),
+              Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3B2A20),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: color, width: 3),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 7),
+
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -55,7 +114,15 @@ LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
     maxX: 6,
 
     //remove border
-    borderData: FlBorderData(show: false),
+    borderData: FlBorderData(
+      show: true,
+      border: const Border(
+        left: BorderSide(color: Color(0xFFD8B17B), width: 2),
+        right: BorderSide(color: Colors.cyan, width: 2),
+        bottom: BorderSide(color: Color(0xFFD8B17B), width: 2),
+        top: BorderSide.none,
+      ),
+    ),
 
     clipData: const FlClipData.all(),
 

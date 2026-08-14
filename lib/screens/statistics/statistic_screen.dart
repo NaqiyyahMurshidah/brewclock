@@ -1,4 +1,3 @@
-import 'package:brewclock/models/sleep_log.dart';
 import 'package:brewclock/widgets/statistics/period_selector.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/statistics/top_drink_card.dart';

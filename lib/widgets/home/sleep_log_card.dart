@@ -1,24 +1,40 @@
 import 'package:flutter/material.dart';
+import '../../models/sleep_log.dart';
+import '../../services/sleep_log_store.dart';
 
-class SleepLog extends StatefulWidget {
+class SleepLogCard extends StatefulWidget {
   final TimeOfDay? initialBedtime;
   final TimeOfDay? initialWakeup;
-  const SleepLog({super.key, this.initialBedtime, this.initialWakeup});
+  final void Function(TimeOfDay bedtime, TimeOfDay wakeup, Duration duration)?
+  onSaved;
+
+  const SleepLogCard({
+    super.key,
+    this.initialBedtime,
+    this.initialWakeup,
+    this.onSaved,
+  });
 
   @override
-  State<SleepLog> createState() => _SleepLogState();
+  State<SleepLogCard> createState() => _SleepLogCardState();
 }
 
-class _SleepLogState extends State<SleepLog> {
+class _SleepLogCardState extends State<SleepLogCard> {
   TimeOfDay? bedtime;
   TimeOfDay? wakeup;
 
   @override
-   void initState() {
+  void initState() {
     super.initState();
 
-    bedtime = widget.initialBedtime;
-    wakeup = widget.initialWakeup;
+    final SleepLog? latestLog = SleepLogStore.latest;
+
+    bedtime =
+        widget.initialBedtime ??
+        (latestLog == null ? null : TimeOfDay.fromDateTime(latestLog.bedtime));
+    wakeup =
+        widget.initialWakeup ??
+        (latestLog == null ? null : TimeOfDay.fromDateTime(latestLog.wakeTime));
   }
 
   @override
@@ -112,7 +128,7 @@ class _SleepLogState extends State<SleepLog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   //drag habdler
-                   Container(
+                  Container(
                     width: 45,
                     height: 5,
                     decoration: BoxDecoration(
@@ -137,7 +153,7 @@ class _SleepLogState extends State<SleepLog> {
                         ),
                       ),
 
-                       IconButton(
+                      IconButton(
                         onPressed: () {
                           Navigator.pop(sheetContext);
                         },
@@ -148,10 +164,7 @@ class _SleepLogState extends State<SleepLog> {
 
                   const Text(
                     "Click to enter last night's sleep time",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
                   ),
 
                   const SizedBox(height: 25),
@@ -219,7 +232,7 @@ class _SleepLogState extends State<SleepLog> {
 
                     child: Column(
                       children: [
-                         const Text(
+                        const Text(
                           "Sleep Duration",
                           style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
@@ -243,15 +256,40 @@ class _SleepLogState extends State<SleepLog> {
                   const SizedBox(height: 30),
 
                   SizedBox(
-                     width: double.infinity, height: 52,
-                     child: OutlinedButton(
+                    width: double.infinity,
+                    height: 52,
+                    child: OutlinedButton(
                       onPressed: duration == null
                           ? null
                           : () {
+                              final SleepLog sleepLog = _createSleepLog(
+                                bedtime: selectedBedtime!,
+                                wakeTime: selectedWakeup!,
+                              );
+
+                              SleepLogStore.add(sleepLog);
+
                               setState(() {
-                                bedtime = selectedBedtime;
-                                wakeup = selectedWakeup;
+                                bedtime = TimeOfDay.fromDateTime(
+                                  sleepLog.bedtime,
+                                );
+
+                                wakeup = TimeOfDay.fromDateTime(
+                                  sleepLog.wakeTime,
+                                );
                               });
+
+                              // widget.onSaved?.call(
+                              //   selectedBedtime!,
+                              //   selectedWakeup!,
+                              //   duration,
+                              // );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Sleep successfully recorded"),
+                                ),
+                              );
 
                               Navigator.pop(sheetContext);
                             },
@@ -272,12 +310,10 @@ class _SleepLogState extends State<SleepLog> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             );
-
-      
           },
         );
       },
@@ -385,4 +421,41 @@ class _TimeCard extends StatelessWidget {
       ),
     );
   }
+}
+
+SleepLog _createSleepLog({
+  required TimeOfDay bedtime,
+  required TimeOfDay wakeTime,
+}) {
+  final DateTime today = DateTime.now();
+
+  DateTime wakeDateTime = DateTime(
+    today.year,
+    today.month,
+    today.day,
+    wakeTime.hour,
+    wakeTime.minute,
+  );
+
+  DateTime bedtimeDateTime = DateTime(
+    today.year,
+    today.month,
+    today.day,
+    bedtime.hour,
+    bedtime.minute,
+  );
+
+  //if bedtime is later than wake-up
+  //bedtime happened on the previous day
+  if (!bedtimeDateTime.isBefore(wakeDateTime)) {
+    bedtimeDateTime = bedtimeDateTime.subtract(const Duration(days: 1));
+  }
+
+  final Duration sleepDuration = wakeDateTime.difference(bedtimeDateTime);
+
+  return SleepLog(
+    bedtime: bedtimeDateTime,
+    wakeTime: wakeDateTime,
+    duration: sleepDuration,
+  );
 }

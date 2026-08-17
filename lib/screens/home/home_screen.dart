@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 //sleep_log_card.dart widgets/home
                 const SizedBox(height: 20),
-                SleepLog(),
+                SleepLogCard(),
 
                 const SizedBox(height: 20),
                 CaffeineLimitCard(

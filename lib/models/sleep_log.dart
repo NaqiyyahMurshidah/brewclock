@@ -21,7 +21,7 @@ class SleepLog {
     return SleepLog(
       bedtime: DateTime.parse(map['bedtime']),
       wakeTime: DateTime.parse(map['wakeTime']),
-      duration: Duration(minutes: map['durationMinutes']),
+      duration: Duration(minutes: map['durationMinutes'] as int),
     );
   }
 }

@@ -14,11 +14,16 @@ class TrackerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final logs = CoffeeLogStore.logs;
 
+    final DateTime now = DateTime.now();
+
     final double activeCaffeine =
-        ActiveCaffeineCalc.calculateTotalActivateCaffeine(
-          logs: logs,
-          now: DateTime.now(),
-        );
+        ActiveCaffeineCalc.calculateTotalActivateCaffeine(logs: logs, now: now);
+
+    final List<FlSpot> decaySpots = ActiveCaffeineCalc.generateDecayCurve(
+      logs: logs,
+      startTime: now,
+      hoursToShow: 12,
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
@@ -41,17 +46,7 @@ class TrackerScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               //decay curve chart  widgets/tracker
-              DecayCurveCard(
-                spots: [
-                  FlSpot(0, 65),
-                  FlSpot(1, 55),
-                  FlSpot(2, 42),
-                  FlSpot(3, 30),
-                  FlSpot(4, 20),
-                  FlSpot(5, 12),
-                  FlSpot(6, 6),
-                ],
-              ),
+              DecayCurveCard(spots: decaySpots, startTime: now),
               const SizedBox(height: 24),
 
               //bedtime forecast card widgets/tracker

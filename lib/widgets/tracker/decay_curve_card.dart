@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 
 class DecayCurveCard extends StatelessWidget {
   final List<FlSpot> spots;
+  final DateTime startTime;
 
-  const DecayCurveCard({super.key, required this.spots});
+  const DecayCurveCard({
+    super.key,
+    required this.spots,
+    required this.startTime,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,119 +37,127 @@ class DecayCurveCard extends StatelessWidget {
           //CHART
           SizedBox(
             height: 220,
-            child: LineChart(_chartData(spots)),
+            child: LineChart(_chartData(spots, startTime, context)),
           ), //this is where we call the chart function
         ],
       ),
     );
   }
-}
 
-LineChartData _chartData(List<FlSpot> spots) {
-  return LineChartData(
-    // range of sleep score
-    minY: 0,
-    maxY: 70,
+  LineChartData _chartData(
+    List<FlSpot> spots,
+    DateTime startTime,
+    BuildContext context,
+  ) {
+    //find highest caffeine value in the graph
+    final double highestValue = spots.isEmpty
+        ? 100
+        : spots.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
 
-    minX: 0,
-    maxX: 6,
+    //auto adjust y-axis
+    final double chartMaxY = highestValue <= 100 ? 100 : highestValue + 50;
 
-    //remove border
-    borderData: FlBorderData(show: false),
+    return LineChartData(
+      // range of sleep score
+      minY: 0,
+      maxY: chartMaxY,
 
-    clipData: const FlClipData.all(),
+      minX: 0,
+      maxX: 12,
 
-    //show grid lines
-    gridData: FlGridData(
-      show: true,
-      drawVerticalLine: true,
-      drawHorizontalLine: true,
-      horizontalInterval: 10,
-      verticalInterval: 1,
+      //remove border
+      borderData: FlBorderData(show: false),
 
-      getDrawingHorizontalLine: (value) {
-        return FlLine(
-          color: Colors.white.withOpacity(.08),
-          strokeWidth: 1,
-          dashArray: [5, 5],
-        );
-      },
-      getDrawingVerticalLine: (value) {
-        return FlLine(
-          color: Colors.white.withOpacity(.08),
-          strokeWidth: 1,
-          dashArray: [5, 5],
-        );
-      },
-    ),
+      clipData: const FlClipData.all(),
 
-    // Axis titles
-    titlesData: FlTitlesData(
-      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      //show grid lines
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        drawHorizontalLine: true,
+        horizontalInterval: 10,
+        verticalInterval: 1,
 
-      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Colors.white.withOpacity(.08),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: Colors.white.withOpacity(.08),
+            strokeWidth: 1,
+            dashArray: [5, 5],
+          );
+        },
+      ),
 
-      leftTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 24,
+      // Axis titles
+      titlesData: FlTitlesData(
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
 
-          getTitlesWidget: (value, meta) {
-            return Text(
-              "mg",
-              style: TextStyle(color: Colors.white38, fontSize: 10),
-            );
-          },
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 24,
+
+            getTitlesWidget: (value, meta) {
+              return Text(
+                "mg",
+                style: TextStyle(color: Colors.white38, fontSize: 10),
+              );
+            },
+          ),
+        ),
+
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 35,
+
+            getTitlesWidget: (value, meta) {
+              final int hourOffset = value.toInt();
+
+              //only show label every 2 hours
+              if (hourOffset % 2 != 0){
+               return const SizedBox.shrink();
+              }
+
+              final DateTime time = startTime.add(Duration(hours: hourOffset));
+
+              final TimeOfDay timeOfDay = TimeOfDay.fromDateTime(time);
+
+              return Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  timeOfDay.format(context),
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
+              );
+            },
+          ),
         ),
       ),
 
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 35,
+      lineBarsData: [
+        LineChartBarData(
+          spots: spots,
+          isCurved: true,
+          color: Colors.white,
+          barWidth: 3,
+          isStrokeCapRound: true,
 
-          getTitlesWidget: (value, meta) {
-            const times = [
-              "5 PM",
-              "4 PM",
-              "3 PM",
-              "2 PM",
-              "1 PM",
-              "12 PM",
-              "11 AM",
-            ];
+          dotData: const FlDotData(show: false),
 
-            if (value < 0 || value >= times.length) {
-              return const SizedBox.shrink();
-            }
-
-            return Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                times[value.toInt()],
-                style: const TextStyle(color: Colors.white54, fontSize: 11),
-              ),
-            );
-          },
+          belowBarData: BarAreaData(show: false),
         ),
-      ),
-    ),
-    lineBarsData: [
-      LineChartBarData(
-        spots: spots,
-
-        isCurved: true,
-
-        color: Colors.white,
-
-        barWidth: 3,
-
-        isStrokeCapRound: true,
-
-        dotData: const FlDotData(show: false),
-
-        belowBarData: BarAreaData(show: false),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

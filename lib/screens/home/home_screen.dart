@@ -5,6 +5,7 @@ import '../../widgets/home/today_intake_card.dart';
 import '../../widgets/home/drink_loc_card.dart';
 import '../../services/caffeine_log_store.dart';
 import '../../services/active_caffeine_calc.dart';
+import '../../widgets/home/sleep_log_card.dart';
 //crossAxisAllignment.start = make it aligns text to the left (start)
 
 class HomeScreen extends StatefulWidget {
@@ -89,14 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 DrinkLocation(),
 
-                //sleep score card
-                // const SleepScoreCard(
-                //   score: 98,
-                //   quality: "Deeply Restful",
-                //   bedtime: "11:00 PM",
-                //   wakeTime: "7:00 AM",
-                //   duration: "8h",
-                // ),
+                //sleep_log_card.dart widgets/home
+                const SizedBox(height: 20),
+                SleepLogCard(),
+
                 const SizedBox(height: 20),
                 CaffeineLimitCard(
                   caffeine: todayCaffeine,

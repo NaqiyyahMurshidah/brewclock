@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
+          physics: FixedExtentScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(24.0),
 

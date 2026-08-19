@@ -18,15 +18,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  // final sleepSpots = [
-  //   FlSpot(0, 90),
-  //   FlSpot(1, 92),
-  //   FlSpot(2, 94),
-  //   FlSpot(3, 89),
-  //   FlSpot(4, 91),
-  //   FlSpot(5, 93),
-  //   FlSpot(6, 90),
-  // ];
 
   StatsPeriod _selectedPeriod = StatsPeriod.today;
   @override
@@ -136,6 +127,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: ListView(
+            physics: FixedExtentScrollPhysics(),
             children: [
               //start all items in the page
               //the top title

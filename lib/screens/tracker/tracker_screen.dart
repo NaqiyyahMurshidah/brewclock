@@ -28,31 +28,31 @@ class TrackerScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(24),
-          child: ListView(
-            children: [
-              PageHeader(
-                label: "TRACKER",
-                title: "Active Caffeine",
-                icon: Icons.local_cafe,
-              ),
+          physics:FixedExtentScrollPhysics(),
 
-              const SizedBox(height: 24),
+          children: [
+            PageHeader(
+              label: "TRACKER",
+              title: "Active Caffeine",
+              icon: Icons.local_cafe,
+            ),
 
-              //active caffeine card
-              ActiveCaffeineCard(caffeine: activeCaffeine.round(), limit: 400),
+            const SizedBox(height: 24),
 
-              const SizedBox(height: 24),
+            //active caffeine card
+            ActiveCaffeineCard(caffeine: activeCaffeine.round(), limit: 400),
 
-              //decay curve chart  widgets/tracker
-              DecayCurveCard(spots: decaySpots, startTime: now),
-              const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-              //bedtime forecast card widgets/tracker
-              BedtimeForecastCard(caffeineLeft: 12, bedTime: "10:30 PM"),
-            ],
-          ),
+            //decay curve chart  widgets/tracker
+            DecayCurveCard(spots: decaySpots, startTime: now),
+            const SizedBox(height: 24),
+
+            //bedtime forecast card widgets/tracker
+            BedtimeForecastCard(caffeineLeft: 12, bedTime: "10:30 PM"),
+          ],
         ),
       ),
     );

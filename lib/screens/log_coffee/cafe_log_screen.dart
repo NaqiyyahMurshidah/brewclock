@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
 import '../../services/caffeine_calculator.dart';
+import '../log_coffee/done_log_screen.dart';
 
 class CafeLogCoffee extends StatefulWidget {
   const CafeLogCoffee({super.key});
@@ -436,7 +437,15 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
     debugPrint("Total logs: ${CoffeeLogStore.logs.length}");
 
     // Close Cafe Log page after saving
-    Navigator.pop(context,true); //true means successfully added
+    // Navigator.pop(context,true); //true means successfully added
+    Navigator.pushReplacement<void, bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            DoneLogScreen(drinkName: log.drinkName ?? "Coffee", caffeineMg: log.caffeineMg),
+      ),
+      result: true,
+    );
   }
 
   Widget _shotBox(int shots) {

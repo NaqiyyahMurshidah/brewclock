@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../services/caffeine_calculator.dart';
 import '../../models/coffee_log.dart';
+import '../log_coffee/done_log_screen.dart';
 
 class HomeLogCoffee extends StatefulWidget {
   const HomeLogCoffee({super.key});
@@ -40,7 +41,6 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
         selectedBrand != null &&
         selectedTime != null &&
         selectedAmount != null;
-    ;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
@@ -313,7 +313,15 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
     debugPrint("Caffeine: ${log.caffeineMg} mg");
     debugPrint("Time: ${log.consumedAt}");
 
-    Navigator.pop(context, true);
-
+    Navigator.pushReplacement<void, bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DoneLogScreen(
+          drinkName: log.drinkName ?? "Coffee",
+          caffeineMg: log.caffeineMg,
+        ),
+      ),
+      result: true,
+    );
   }
 }

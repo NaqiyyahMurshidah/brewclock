@@ -18,7 +18,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-
   StatsPeriod _selectedPeriod = StatsPeriod.today;
   @override
   Widget build(BuildContext context) {
@@ -124,10 +123,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
           child: ListView(
-            physics: FixedExtentScrollPhysics(),
+            padding: const EdgeInsets.all(24),
+            physics: const ClampingScrollPhysics(),
             children: [
               //start all items in the page
               //the top title

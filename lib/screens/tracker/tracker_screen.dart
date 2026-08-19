@@ -28,31 +28,34 @@ class TrackerScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          physics:FixedExtentScrollPhysics(),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            physics: FixedExtentScrollPhysics(),
 
-          children: [
-            PageHeader(
-              label: "TRACKER",
-              title: "Active Caffeine",
-              icon: Icons.local_cafe,
-            ),
+            children: [
+              PageHeader(
+                label: "TRACKER",
+                title: "Active Caffeine",
+                icon: Icons.local_cafe,
+              ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            //active caffeine card
-            ActiveCaffeineCard(caffeine: activeCaffeine.round(), limit: 400),
+              //active caffeine card
+              ActiveCaffeineCard(caffeine: activeCaffeine.round(), limit: 400),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            //decay curve chart  widgets/tracker
-            DecayCurveCard(spots: decaySpots, startTime: now),
-            const SizedBox(height: 24),
+              //decay curve chart  widgets/tracker
+              DecayCurveCard(spots: decaySpots, startTime: now),
+              const SizedBox(height: 24),
 
-            //bedtime forecast card widgets/tracker
-            BedtimeForecastCard(caffeineLeft: 12, bedTime: "10:30 PM"),
-          ],
+              //bedtime forecast card widgets/tracker
+              BedtimeForecastCard(caffeineLeft: 12, bedTime: "10:30 PM"),
+            ],
+          ),
         ),
       ),
     );

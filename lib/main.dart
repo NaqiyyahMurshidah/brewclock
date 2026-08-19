@@ -1,5 +1,6 @@
 import 'package:brewclock/navigation/main_navigation.dart';
 import 'package:flutter/material.dart';
+import 'screens/auth/login_screen.dart';
 // import 'screens/home/home_screen.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class BrewClockApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'BrewClock',
       theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF1A1411)),
-      home: const MainNavigation(),
+      home: const LoginScreen(),
     );
   }
 }

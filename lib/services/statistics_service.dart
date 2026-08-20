@@ -1,4 +1,5 @@
 import '../models/coffee_log.dart';
+import '../models/sleep_log.dart';
 
 class StatisticsService {
   static List<CaffeineLog> filterLogs({
@@ -70,5 +71,40 @@ class StatisticsService {
     if (matching.isEmpty) return 0;
 
     return matching.first.caffeineMg;
+  }
+
+  //sleep log
+  static List<SleepLog> filtersSleepLogs({
+    required List<SleepLog> logs,
+    required DateTime now,
+    required String period,
+  }) {
+    if (period == "today") {
+      return logs.where((log) {
+        return log.wakeTime.year == now.year &&
+            log.wakeTime.month == now.month &&
+            log.wakeTime.day == now.day;
+      }).toList();
+    }
+
+    if (period == "week") {
+      final DateTime startOfWeek = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
+
+      return logs.where((log) {
+        return !log.wakeTime.isBefore(startOfWeek);
+      }).toList();
+    }
+
+    if (period == "month") {
+      return logs.where((log) {
+        return log.wakeTime.year == now.year && log.wakeTime.month == now.month;
+      }).toList();
+    }
+
+    return logs;
   }
 }

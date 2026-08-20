@@ -28,9 +28,12 @@ class TrackerScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
           child: ListView(
+            padding: const EdgeInsets.all(24),
+            physics: FixedExtentScrollPhysics(),
+
             children: [
               PageHeader(
                 label: "TRACKER",

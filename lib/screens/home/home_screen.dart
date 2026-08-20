@@ -46,67 +46,64 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFF1A1411),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Padding(
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+          child: ListView(
+            physics: ClampingScrollPhysics(),
+
             padding: const EdgeInsets.all(24.0),
 
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Hello shida !",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Hello shida !",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Tuesday, 19th may",
-                          style: TextStyle(color: Colors.white70, fontSize: 18),
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Tuesday, 19th may",
+                        style: TextStyle(color: Colors.white70, fontSize: 18),
+                      ),
+                    ],
+                  ),
 
-                    const CircleAvatar(radius: 28, child: Icon(Icons.person)),
-                  ],
-                ),
+                  const CircleAvatar(radius: 28, child: Icon(Icons.person)),
+                ],
+              ),
 
-                //widgets/active_caffeine_card.dart
-                const SizedBox(height: 30),
-                ActiveCaffeineCard(
-                  caffeine: activeCaffeine.round(),
-                  limit: caffeineLimit,
-                ),
+              //widgets/active_caffeine_card.dart
+              const SizedBox(height: 30),
+              ActiveCaffeineCard(
+                caffeine: activeCaffeine.round(),
+                limit: caffeineLimit,
+              ),
 
-                // drink_loc.dart card at /widget/common
-                const SizedBox(height: 20),
-                DrinkLocation(),
+              // drink_loc.dart card at /widget/common
+              const SizedBox(height: 20),
+              DrinkLocation(),
 
-                //sleep_log_card.dart widgets/home
-                const SizedBox(height: 20),
-                SleepLogCard(),
+              //sleep_log_card.dart widgets/home
+              const SizedBox(height: 20),
+              SleepLogCard(),
 
-                const SizedBox(height: 20),
-                CaffeineLimitCard(
-                  caffeine: todayCaffeine,
-                  limit: caffeineLimit,
-                ),
+              const SizedBox(height: 20),
+              CaffeineLimitCard(caffeine: todayCaffeine, limit: caffeineLimit),
 
-                // today's intake
-                const SizedBox(height: 14),
-                TodayIntakeCard(logs: logs),
+              // today's intake
+              const SizedBox(height: 14),
+              TodayIntakeCard(logs: logs),
 
-                const SizedBox(height: 20),
-              ],
-            ), //arrange item vertically
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),

@@ -104,7 +104,19 @@ class _ChartLegend extends StatelessWidget {
   }
 }
 
+double mapSleepToChart(double hours) {
+  const double maxSleepHours = 10;
+  const double chartMax = 400;
+
+  return (hours / maxSleepHours) * chartMax;
+}
+
 LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
+
+  final mappedSleepSpots = sleepSpots.map((spot) {
+    return FlSpot(spot.x, mapSleepToChart(spot.y));
+  }).toList();
+
   return LineChartData(
     // range of sleep score
     minY: 0,
@@ -220,7 +232,7 @@ LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
         belowBarData: BarAreaData(show: false),
       ),
       LineChartBarData(
-        spots: sleepSpots,
+        spots: mappedSleepSpots,
         isCurved: true,
         color: Colors.cyan,
         barWidth: 3,

@@ -148,14 +148,14 @@ LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
 
       getDrawingHorizontalLine: (value) {
         return FlLine(
-          color: Colors.white.withOpacity(.08),
+          color: Colors.white.withValues(alpha: .08),
           strokeWidth: 1,
           dashArray: [5, 5],
         );
       },
       getDrawingVerticalLine: (value) {
         return FlLine(
-          color: Colors.white.withOpacity(.08),
+          color: Colors.white.withValues(alpha: .08),
           strokeWidth: 1,
           dashArray: [5, 5],
         );

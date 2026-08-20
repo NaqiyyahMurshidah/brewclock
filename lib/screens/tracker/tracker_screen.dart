@@ -32,7 +32,7 @@ class TrackerScreen extends StatelessWidget {
           behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
           child: ListView(
             padding: const EdgeInsets.all(24),
-            physics: FixedExtentScrollPhysics(),
+            physics: ClampingScrollPhysics(),
 
             children: [
               PageHeader(

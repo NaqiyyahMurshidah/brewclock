@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/auth/auth_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,13 +14,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nameController = TextEditingController();
-
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  final AuthService _authService = AuthService();
 
   bool _hidePassword = true;
   bool _hideConfirmPassword = true;
@@ -99,9 +100,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      // Connect Firebase sign-up here later.
-      debugPrint("Name: ${_nameController.text}");
-      debugPrint("Email: ${_emailController.text}");
+      final UserCredential result = await _authService.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      debugPrint("USER CREATED: ${result.user?.uid}");
+
+      debugPrint("EMAIL: ${result.user?.email}");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Account created successfully")),
+      );
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (error) {
+      debugPrint("FIREBASE ERROR: ${error.code}");
+
+      debugPrint("MESSAGE: ${error.message}");
+
+      if (!mounted) return;
+
+      String message = "Unable to create account";
+
+      if (error.code == "email-already-in-use") {
+        message = "This email is already registered.";
+      } else if (error.code == "weak-password") {
+        message = "Please choose a stronger password.";
+      } else if (error.code == "invalid-email") {
+        message = "Please enter a valid email.";
+      } else if (error.code == "operation-not-allowed") {
+        message = "Email/password sign up is not enabled.";
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (error) {
+      debugPrint("SIGN UP ERROR: $error");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Something went wrong. Please try again."),
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {

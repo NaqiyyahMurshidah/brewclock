@@ -97,17 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const BrewClockLogo(),
 
-                    const SizedBox(height: 38),
-
-                    const Text(
-                      "Welcome back",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
                     const SizedBox(height: 7),
 
                     const Text(

@@ -2,9 +2,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class CaffSleepChartCard extends StatelessWidget {
-  final List<FlSpot> spots;
+  final List<FlSpot> caffeineSpots;
+  final List<FlSpot> sleepSpots;
 
-  const CaffSleepChartCard({super.key, required this.spots});
+  const CaffSleepChartCard({
+    super.key,
+    required this.caffeineSpots,
+    required this.sleepSpots,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,25 +37,104 @@ class CaffSleepChartCard extends StatelessWidget {
           //CHART
           SizedBox(
             height: 220,
-            child: LineChart(_chartData(spots)),
+            child: LineChart(_chartData(caffeineSpots, sleepSpots)),
           ), //this is where we call the chart function
+
+          const SizedBox(height: 15),
+
+          //chart labels
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _ChartLegend(color: Color(0xFFD8B17B), label: "Caffeine (mg)"),
+
+              SizedBox(width: 24),
+
+              _ChartLegend(color: Colors.cyan, label: "Sleep score"),
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-LineChartData _chartData(List<FlSpot> spots) {
+class _ChartLegend extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _ChartLegend({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 28,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(height: 3, color: color),
+              Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3B2A20),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: color, width: 3),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 7),
+
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+double mapSleepToChart(double hours) {
+  const double maxSleepHours = 10;
+  const double chartMax = 400;
+
+  return (hours / maxSleepHours) * chartMax;
+}
+
+LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
+
+  final mappedSleepSpots = sleepSpots.map((spot) {
+    return FlSpot(spot.x, mapSleepToChart(spot.y));
+  }).toList();
+
   return LineChartData(
     // range of sleep score
     minY: 0,
-    maxY: 70,
+    maxY: 140,
 
     minX: 0,
     maxX: 6,
 
     //remove border
-    borderData: FlBorderData(show: false),
+    borderData: FlBorderData(
+      show: true,
+      border: const Border(
+        left: BorderSide(color: Color(0xFFD8B17B), width: 2),
+        right: BorderSide(color: Colors.cyan, width: 2),
+        bottom: BorderSide(color: Color(0xFFD8B17B), width: 2),
+        top: BorderSide.none,
+      ),
+    ),
 
     clipData: const FlClipData.all(),
 
@@ -59,7 +143,7 @@ LineChartData _chartData(List<FlSpot> spots) {
       show: true,
       drawVerticalLine: true,
       drawHorizontalLine: true,
-      horizontalInterval: 10,
+      horizontalInterval: 35,
       verticalInterval: 1,
 
       getDrawingHorizontalLine: (value) {
@@ -82,17 +166,33 @@ LineChartData _chartData(List<FlSpot> spots) {
     titlesData: FlTitlesData(
       topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
 
-      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      rightTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          interval: 25,
+          reservedSize: 30,
+
+          getTitlesWidget: (value, meta) {
+            final sleepScore = (value / 140 * 100).round();
+
+            return Text(
+              sleepScore.toString(),
+              style: const TextStyle(color: Colors.cyan, fontSize: 10),
+            );
+          },
+        ),
+      ),
 
       leftTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
-          reservedSize: 24,
+          interval: 35,
+          reservedSize: 30,
 
           getTitlesWidget: (value, meta) {
             return Text(
-              "mg",
-              style: TextStyle(color: Colors.white38, fontSize: 10),
+              value.toInt().toString(),
+              style: const TextStyle(color: Color(0xFFD8B17B), fontSize: 10),
             );
           },
         ),
@@ -104,24 +204,16 @@ LineChartData _chartData(List<FlSpot> spots) {
           reservedSize: 35,
 
           getTitlesWidget: (value, meta) {
-            const times = [
-              "5 PM",
-              "4 PM",
-              "3 PM",
-              "2 PM",
-              "1 PM",
-              "12 PM",
-              "11 AM",
-            ];
+            const days = ["M", "T", "W", "T", "F", "S", "S"];
 
-            if (value < 0 || value >= times.length) {
+            if (value < 0 || value >= days.length) {
               return const SizedBox.shrink();
             }
 
             return Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                times[value.toInt()],
+                days[value.toInt()],
                 style: const TextStyle(color: Colors.white54, fontSize: 11),
               ),
             );
@@ -131,18 +223,21 @@ LineChartData _chartData(List<FlSpot> spots) {
     ),
     lineBarsData: [
       LineChartBarData(
-        spots: spots,
-
+        spots: caffeineSpots,
         isCurved: true,
-
-        color: Colors.white,
-
+        color: const Color(0xFFD8B17B),
         barWidth: 3,
-
         isStrokeCapRound: true,
-
         dotData: const FlDotData(show: false),
-
+        belowBarData: BarAreaData(show: false),
+      ),
+      LineChartBarData(
+        spots: mappedSleepSpots,
+        isCurved: true,
+        color: Colors.cyan,
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
       ),
     ],

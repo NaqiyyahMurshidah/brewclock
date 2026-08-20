@@ -4,12 +4,14 @@ class TopDrinkCard extends StatelessWidget {
   final int topDrinkMg;
   final String caffeineType;
   final int maxCaffeine;
+  final int avgCaffeine;
 
   const TopDrinkCard({
     super.key,
     required this.topDrinkMg,
     required this.caffeineType,
     required this.maxCaffeine,
+    required this.avgCaffeine,
   });
 
   @override
@@ -25,6 +27,28 @@ class TopDrinkCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Avg Caffeine : ",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 23),
+                Text(
+                  "$avgCaffeine",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
             const Text(
               "Top Drink",
               style: TextStyle(
@@ -34,7 +58,7 @@ class TopDrinkCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 22),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

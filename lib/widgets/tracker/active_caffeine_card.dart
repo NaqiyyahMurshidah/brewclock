@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 
 class ActiveCaffeineCard extends StatelessWidget {
-  const ActiveCaffeineCard({super.key});
+  final int caffeine;
+  final int limit;
+
+  const ActiveCaffeineCard({
+    super.key,
+    required this.caffeine,
+    required this.limit,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final double progress = (caffeine / limit).clamp(0.0, 1.0);
+
+    final String level;
+
+    if (caffeine <= limit * 0.25) {
+      level = "LOW";
+    } else if (caffeine <= limit * 0.60) {
+      level = "MODERATE";
+    } else {
+      level = "HIGH";
+    }
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -34,7 +53,7 @@ class ActiveCaffeineCard extends StatelessWidget {
                     SizedBox(height: 6),
 
                     Text(
-                      "Peaked 1h 2m ago",
+                      "Estimated caffeine remaining",
                       style: TextStyle(color: Colors.white70),
                     ),
                   ],
@@ -48,7 +67,7 @@ class ActiveCaffeineCard extends StatelessWidget {
                       BorderSide(color: Colors.white24),
                     ),
                   ),
-                  child: Text("LOW", style: TextStyle(color: Colors.white70)),
+                  child: Text(level, style: TextStyle(color: Colors.white70)),
                 ),
               ],
             ),
@@ -59,35 +78,39 @@ class ActiveCaffeineCard extends StatelessWidget {
               child: SizedBox(
                 width: 190,
                 height: 190,
+
                 child: Stack(
                   alignment: Alignment.center,
+
                   children: [
-                    
                     SizedBox(
                       width: 180,
                       height: 180,
+
                       child: CircularProgressIndicator(
-                        value: 0.15,
+                        value: progress,
                         strokeWidth: 12,
                         backgroundColor: Colors.white12,
-                        valueColor: AlwaysStoppedAnimation(Color(0xFFD8A15B)
-                        ),
+                        valueColor: AlwaysStoppedAnimation(Color(0xFFD8A15B)),
                       ),
                     ),
 
                     Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Text("20", style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 42,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+                      children:  [
+                        Text(
+                          "$caffeine",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
 
                         SizedBox(height: 6),
 
-                       Text(
+                        Text(
                           "MG ACTIVE",
                           style: TextStyle(
                             color: Colors.white70,
@@ -95,23 +118,21 @@ class ActiveCaffeineCard extends StatelessWidget {
                           ),
                         ),
 
-                         SizedBox(height: 8),
+                        SizedBox(height: 8),
 
-                        Text( 
-                          "LOW",
+                        Text(
+                          level,
                           style: TextStyle(
                             color: Color(0xFFD8A15B),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-
-              )
+            ),
           ],
         ),
       ),

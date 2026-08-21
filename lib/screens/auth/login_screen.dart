@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../widgets/auth/auth_card.dart';
 import 'signup_screen.dart';
+import '../../services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
 
   bool _hidePassword = true;
   bool _isLoading = false;
@@ -62,9 +66,46 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Connect Firebase login here later.
-      debugPrint("Email: ${_emailController.text}");
-      debugPrint("Password entered");
+      // Connect Firebase
+      final UserCredential result = await _authService.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      debugPrint("LOGIN SUCCESS: ${result.user?.email}");
+
+      } on FirebaseAuthException catch (error) {
+      debugPrint("LOGIN ERROR: ${error.code}");
+      debugPrint("MESSAGE: ${error.message}");
+
+      if (!mounted) return;
+
+      String message = "Unable to log in.";
+
+      if (error.code == "invalid-credential") {
+        message = "Incorrect email or password.";
+      } else if (error.code == "invalid-email") {
+        message = "Please enter a valid email.";
+      } else if (error.code == "user-disabled") {
+        message = "This account has been disabled.";
+      } else if (error.code == "too-many-requests") {
+        message = "Too many login attempts. Please try again later.";
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (error) {
+      debugPrint("LOGIN ERROR: $error");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Something went wrong. Please try again."),
+        ),
+      );
+
     } finally {
       if (mounted) {
         setState(() {

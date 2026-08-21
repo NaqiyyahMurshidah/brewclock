@@ -4,6 +4,7 @@ import 'package:brewclock/widgets/profile/profile_header_card.dart';
 import 'package:brewclock/widgets/profile/profile_settings_card.dart';
 import 'package:brewclock/widgets/profile/profile_stat_card.dart';
 import 'package:flutter/material.dart';
+import '../../screens/settings/goals_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -82,6 +83,12 @@ class ProfileScreen extends StatelessWidget {
               ProfileSettingsCard(
                 onGoalsTap: () {
                   // Navigate to caffeine and sleep goals.
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const GoalsScreen(),
+                    ),
+                  );
                 },
                 onNotificationsTap: () {
                   // Navigate to notification settings.

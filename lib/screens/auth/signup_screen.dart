@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/auth/auth_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
+import '../../services/user_firestore_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,6 +21,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       TextEditingController();
 
   final AuthService _authService = AuthService();
+
+  final UserFirestoreService _userFirestoreService = UserFirestoreService();
 
   bool _hidePassword = true;
   bool _hideConfirmPassword = true;
@@ -105,8 +108,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: _passwordController.text,
       );
 
-      debugPrint("USER CREATED: ${result.user?.uid}");
+      final user = result.user;
 
+      if (user != null) {
+        await _userFirestoreService.createUserProfile(
+          uid: user.uid,
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+        );
+      }
+
+      debugPrint("USER CREATED: ${result.user?.uid}");
       debugPrint("EMAIL: ${result.user?.email}");
 
       if (!mounted) return;

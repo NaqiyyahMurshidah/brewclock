@@ -104,4 +104,37 @@ class UserProfileService {
       'preferredBedtime': preferredBedTime,
     }, SetOptions(merge: true));
   }
+
+  //=========
+  //get name
+
+  static Stream<String> getName() {
+    final user = currentUser;
+
+    if (user == null) {
+      return Stream.value("User");
+    }
+
+    return userDocument.snapshots().map((document) {
+      final data = document.data();
+
+      return data?['name'] as String? ?? "User";
+    });
+  }
+
+  //===========
+  //get email
+   static Stream<String> getEmail() {
+    final user = currentUser;
+
+    if (user == null) {
+      return Stream.value("User");
+    }
+
+    return userDocument.snapshots().map((document) {
+      final data = document.data();
+
+      return data?['email'] as String? ?? "User";
+    });
+  }
 }

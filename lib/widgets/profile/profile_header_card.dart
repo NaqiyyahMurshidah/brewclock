@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:brewclock/services/firestore/user_profile_service.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   final String userName;
@@ -37,25 +38,39 @@ class ProfileHeaderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '$userName ⚡',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  ),
+                StreamBuilder<String>(
+                  stream: UserProfileService.getName(),
+                  builder: (context, snapshot) {
+                    final String name = snapshot.data ?? "User";
+
+                    return Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
+
                 const SizedBox(height: 5),
-                Text(
-                  userEmail,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFFB8A99C),
-                    fontSize: 14,
-                  ),
+                
+                StreamBuilder<String>(
+                  stream: UserProfileService.getEmail(),
+                  builder: (context, snapshot) {
+                    final String email = snapshot.data ?? "User";
+
+                    return Text(
+                      email,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Color(0xFFB8A99C),
+                        fontSize: 14,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

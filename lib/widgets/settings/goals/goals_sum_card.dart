@@ -57,9 +57,9 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: GoalsSummaryCards._cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: GoalsSummaryCards._accentColor.withValues(alpha: 0.25),
-        ),
+        // border: Border.all(
+        //   color: GoalsSummaryCards._accentColor.withValues(alpha: 0.25),
+        // ),
       ),
       child: Row(
         children: [

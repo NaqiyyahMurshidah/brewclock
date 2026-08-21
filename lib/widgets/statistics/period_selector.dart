@@ -18,7 +18,7 @@ class PeriodSelector extends StatelessWidget {
     return Container(
       height: 60,
       decoration: BoxDecoration(
-        color: const Color(0xFF3A291F),
+        color: const Color(0xFF30261F),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(

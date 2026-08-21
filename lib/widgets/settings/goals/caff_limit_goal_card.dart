@@ -90,7 +90,7 @@ class CaffeineLimitGoalCard extends StatelessWidget {
     return BoxDecoration(
       color: _cardColor,
       borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
+      // border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
     );
   }
 }
@@ -105,9 +105,9 @@ class _CaffeineIcon extends StatelessWidget {
       height: 52,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: CaffeineLimitGoalCard._accentColor.withValues(alpha: 0.35),
-        ),
+        // border: Border.all(
+        //   color: CaffeineLimitGoalCard._accentColor.withValues(alpha: 0.35),
+        // ),
       ),
       child: const Icon(
         Icons.coffee_rounded,

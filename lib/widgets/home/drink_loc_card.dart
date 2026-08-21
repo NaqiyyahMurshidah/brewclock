@@ -45,7 +45,7 @@ class _DrinkLocationState extends State<DrinkLocation> {
                 child: Ink(
                   height: 80,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3A291F),
+                    color: const Color(0xFF30261F),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Center(
@@ -89,7 +89,7 @@ class _DrinkLocationState extends State<DrinkLocation> {
                 child: Ink(
                   height: 80,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3A291F),
+                    color: const Color(0xFF30261F),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Center(

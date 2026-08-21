@@ -34,7 +34,7 @@ class StatsSumCard extends StatelessWidget {
       height: 80,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFF3A291F),
+        color: Color(0xFF30261F),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(

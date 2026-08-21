@@ -36,7 +36,7 @@ class PreferredBedtimeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: _cardColor,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
+            // border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
           ),
           child: Row(
             children: [
@@ -45,9 +45,9 @@ class PreferredBedtimeCard extends StatelessWidget {
                 height: 52,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: _accentColor.withValues(alpha: 0.35),
-                  ),
+                  // border: Border.all(
+                  //   color: _accentColor.withValues(alpha: 0.35),
+                  // ),
                 ),
                 child: const Icon(Icons.nightlight_round, color: _accentColor),
               ),

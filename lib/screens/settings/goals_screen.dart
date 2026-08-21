@@ -11,14 +11,13 @@ class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});
 
   @override
-  State<GoalsScreen> createState() =>
-      _GoalsScreenState();
+  State<GoalsScreen> createState() => _GoalsScreenState();
 }
 
 class _GoalsScreenState extends State<GoalsScreen> {
   static const Color _backgroundColor = Color(0xFF1A1411);
 
-  static const Color _cardColor = Color(0xFF30231D);
+  static const Color _cardColor = Color(0xFF30261F);
 
   static const Color _accentColor = Color(0xFFD8A15B);
 
@@ -182,122 +181,127 @@ class _GoalsScreenState extends State<GoalsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: _accentColor))
           : SafeArea(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(22, 8, 22, 30),
-                children: [
-                  const Text(
-                    'Set goals that fit your daily routine',
-                    style: TextStyle(color: _secondaryText, fontSize: 14),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  GoalsSummaryCards(
-                    caffeineLimit: _caffeineLimit.round(),
-                    sleepGoal: _sleepGoal,
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  const Text(
-                    'Your Goals',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 21,
-                      fontWeight: FontWeight.bold,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(
+                  context,
+                ).copyWith(overscroll: false),
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(22, 8, 22, 30),
+                  children: [
+                    const Text(
+                      'Set goals that fit your daily routine',
+                      style: TextStyle(color: _secondaryText, fontSize: 14),
                     ),
-                  ),
 
-                  const SizedBox(height: 15),
+                    const SizedBox(height: 25),
 
-                  CaffeineLimitGoalCard(
-                    caffeineLimit: _caffeineLimit,
-                    onChanged: (value) {
-                      setState(() {
-                        _caffeineLimit = value;
-                      });
-                    },
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  SleepGoalCard(
-                    sleepGoal: _sleepGoal,
-                    onChanged: (hours) {
-                      setState(() {
-                        _sleepGoal = hours;
-                      });
-                    },
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  PreferredBedtimeCard(
-                    bedtime: _preferredBedtime,
-                    onTap: _selectBedtime,
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: _cardColor,
-                      borderRadius: BorderRadius.circular(20),
+                    GoalsSummaryCards(
+                      caffeineLimit: _caffeineLimit.round(),
+                      sleepGoal: _sleepGoal,
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.lightbulb_outline, color: _accentColor),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Used to personalise your reminders and insights.',
-                            style: TextStyle(
-                              color: _secondaryText,
-                              fontSize: 13,
+
+                    const SizedBox(height: 28),
+
+                    const Text(
+                      'Your Goals',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 21,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    CaffeineLimitGoalCard(
+                      caffeineLimit: _caffeineLimit,
+                      onChanged: (value) {
+                        setState(() {
+                          _caffeineLimit = value;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    SleepGoalCard(
+                      sleepGoal: _sleepGoal,
+                      onChanged: (hours) {
+                        setState(() {
+                          _sleepGoal = hours;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    PreferredBedtimeCard(
+                      bedtime: _preferredBedtime,
+                      onTap: _selectBedtime,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: _cardColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.lightbulb_outline, color: _accentColor),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Used to personalise your reminders and insights.',
+                              style: TextStyle(
+                                color: _secondaryText,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  SizedBox(
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _saveGoals,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _accentColor,
-                        foregroundColor: _backgroundColor,
-                        disabledBackgroundColor: _accentColor.withValues(
-                          alpha: 0.5,
-                        ),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
+                        ],
                       ),
-                      child: _isSaving
-                          ? const SizedBox(
-                              width: 23,
-                              height: 23,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: _backgroundColor,
-                              ),
-                            )
-                          : const Text(
-                              'Save Changes',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 25),
+
+                    SizedBox(
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _saveGoals,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _accentColor,
+                          foregroundColor: _backgroundColor,
+                          disabledBackgroundColor: _accentColor.withValues(
+                            alpha: 0.5,
+                          ),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: _isSaving
+                            ? const SizedBox(
+                                width: 23,
+                                height: 23,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: _backgroundColor,
+                                ),
+                              )
+                            : const Text(
+                                'Save Changes',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
     );

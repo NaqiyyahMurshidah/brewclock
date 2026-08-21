@@ -45,7 +45,7 @@ class _SleepLogCardState extends State<SleepLogCard> {
       padding: const EdgeInsets.all(18),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF3B2A20),
+        color: const Color(0xFF30261F),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(

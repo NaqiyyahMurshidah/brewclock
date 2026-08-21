@@ -24,7 +24,7 @@ class SleepGoalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: _cardColor,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
+        // border: Border.all(color: _accentColor.withValues(alpha: 0.22)),
       ),
       child: Column(
         children: [
@@ -74,11 +74,11 @@ class SleepGoalCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: selected ? _accentColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: selected
-                              ? _accentColor
-                              : const Color(0xFF695044),
-                        ),
+                        // border: Border.all(
+                        //   color: selected
+                        //       ? _accentColor
+                        //       : const Color(0xFF695044),
+                        // ),
                       ),
                       child: Center(
                         child: Text(
@@ -114,9 +114,9 @@ class _SleepIcon extends StatelessWidget {
       height: 52,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: SleepGoalCard._accentColor.withValues(alpha: 0.35),
-        ),
+        // border: Border.all(
+        //   color: SleepGoalCard._accentColor.withValues(alpha: 0.35),
+        // ),
       ),
       child: const Icon(Icons.bed_outlined, color: SleepGoalCard._accentColor),
     );

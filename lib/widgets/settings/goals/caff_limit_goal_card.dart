@@ -10,7 +10,7 @@ class CaffeineLimitGoalCard extends StatelessWidget {
     required this.onChanged,
   });
 
-  static const Color _cardColor = Color(0xFF30231D);
+  static const Color _cardColor = Color(0xFF30261F);
   static const Color _accentColor = Color(0xFFD8A15B);
   static const Color _secondaryText = Color(0xFFB8A99F);
 

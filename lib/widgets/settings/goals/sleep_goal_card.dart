@@ -11,7 +11,7 @@ class SleepGoalCard extends StatelessWidget {
   });
 
   static const Color _backgroundColor = Color(0xFF1A1411);
-  static const Color _cardColor = Color(0xFF30231D);
+  static const Color _cardColor = Color(0xFF30261F);
   static const Color _accentColor = Color(0xFFD8A15B);
   static const Color _secondaryText = Color(0xFFB8A99F);
 

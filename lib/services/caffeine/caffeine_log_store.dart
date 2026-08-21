@@ -1,4 +1,4 @@
-import '../models/coffee_log.dart';
+import '../../models/coffee_log.dart';
 
 class CoffeeLogStore {
   static final List<CaffeineLog> logs = [];

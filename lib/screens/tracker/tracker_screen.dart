@@ -4,8 +4,8 @@ import '../../widgets/tracker/decay_curve_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/tracker/bedtime_forecast_card.dart';
 import '../../widgets/common/page_header.dart';
-import '../../services/active_caffeine_calc.dart';
-import '../../services/caffeine_log_store.dart';
+import '../../services/caffeine/active_caffeine_calc.dart';
+import '../../services/caffeine/caffeine_log_store.dart';
 
 class TrackerScreen extends StatelessWidget {
   const TrackerScreen({super.key});

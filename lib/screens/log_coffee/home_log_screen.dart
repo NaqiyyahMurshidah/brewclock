@@ -1,7 +1,7 @@
-import 'package:brewclock/services/caffeine_log_store.dart';
+import 'package:brewclock/services/caffeine/caffeine_log_store.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
-import '../../services/caffeine_calculator.dart';
+import '../../services/caffeine/caffeine_calculator.dart';
 import '../../models/coffee_log.dart';
 import '../log_coffee/done_log_screen.dart';
 

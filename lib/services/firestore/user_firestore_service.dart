@@ -8,11 +8,12 @@ class UserFirestoreService {
     required String name,
     required String email,
   }) async {
-    await _firestore.collection('user').doc(uid).set({
+    await _firestore.collection('users').doc(uid).set({
       'name': name,
       'email': email,
       'caffeineLimit':null,
       'preferredBedTime' : null,
+      'sleepGoal' : null,
       'createdAt' : FieldValue.serverTimestamp(),
     });
   }

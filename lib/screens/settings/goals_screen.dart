@@ -59,10 +59,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
         final double loadedCaffeine =
             (data['caffeineLimit'] as num?)?.toDouble() ?? 400;
 
-        final int loadedSleep = (data['sleepGoalHours'] as num?)?.toInt() ?? 8;
+        final int loadedSleep = (data['sleepGoa'] as num?)?.toInt() ?? 8;
 
         final int loadedBedtime =
-            (data['preferredBedtimeMinutes'] as num?)?.toInt() ?? 1380;
+            (data['preferredBedtime'] as num?)?.toInt() ?? 1380;
 
         setState(() {
           _caffeineLimit = loadedCaffeine.clamp(100, 500).toDouble();
@@ -132,8 +132,8 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'caffeineLimit': _caffeineLimit.round(),
-        'sleepGoalHours': _sleepGoal,
-        'preferredBedtimeMinutes': bedtimeMinutes,
+        'sleepGoal': _sleepGoal,
+        'preferredBedTime': bedtimeMinutes,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 

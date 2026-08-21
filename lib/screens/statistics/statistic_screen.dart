@@ -5,9 +5,9 @@ import '../../widgets/statistics/caff_sleep_chart_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/common/page_header.dart';
 import '../../widgets/statistics/sleep_score_card.dart';
-import '../../services/caffeine_log_store.dart';
+import '../../services/caffeine/caffeine_log_store.dart';
 import '../../services/statistics_service.dart';
-import '../../services/sleep_log_store.dart';
+import '../../services/sleep/sleep_log_store.dart';
 import '../../models/sleep_log.dart';
 
 class StatisticsScreen extends StatefulWidget {

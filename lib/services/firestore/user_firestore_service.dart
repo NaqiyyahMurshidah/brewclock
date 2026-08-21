@@ -11,7 +11,7 @@ class UserFirestoreService {
     await _firestore.collection('user').doc(uid).set({
       'name': name,
       'email': email,
-      'caffeineLimit':400,
+      'caffeineLimit':null,
       'preferredBedTime' : null,
       'createdAt' : FieldValue.serverTimestamp(),
     });

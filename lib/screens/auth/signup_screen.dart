@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../widgets/auth/auth_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/auth_service.dart';
-import '../../services/user_firestore_service.dart';
+import '../../services/firestore/auth_service.dart';
+import '../../services/firestore/user_firestore_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

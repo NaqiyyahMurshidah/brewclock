@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/auth/auth_card.dart';
 import 'signup_screen.dart';
-import '../../services/auth_service.dart';
+import '../../services/firestore/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {

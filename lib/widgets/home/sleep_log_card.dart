@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/sleep_log.dart';
-import '../../services/sleep_log_store.dart';
+import '../../services/sleep/sleep_log_store.dart';
 
 class SleepLogCard extends StatefulWidget {
   final TimeOfDay? initialBedtime;

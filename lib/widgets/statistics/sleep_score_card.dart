@@ -24,7 +24,7 @@ class SleepScoreCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: const Color(0xFF3B2A20),
+        color: const Color(0xFF30261F),
         borderRadius: BorderRadius.circular(24),
       ),
 
@@ -81,7 +81,7 @@ class SleepScoreCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF4A3528),
+                  color: Color(0xFF30261F),
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
@@ -147,7 +147,7 @@ class _InfoBox extends StatelessWidget {
     return Container(
       height: 82,
       decoration: BoxDecoration(
-        color: const Color(0xFF4A3528),
+        color: const Color(0xFF30261F),
         borderRadius: BorderRadius.circular(18),
       ),
 

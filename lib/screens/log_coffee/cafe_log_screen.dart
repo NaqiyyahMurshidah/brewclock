@@ -4,6 +4,7 @@ import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
 import '../../services/caffeine/caffeine_calculator.dart';
 import '../log_coffee/done_log_screen.dart';
+import '../../services/firestore/coffee_firestore_service.dart';
 
 class CafeLogCoffee extends StatefulWidget {
   const CafeLogCoffee({super.key});
@@ -377,7 +378,7 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
     );
   }
 
-  void _addCoffee() {
+  Future<void> _addCoffee() async {
     //check
     if (selectedDrink == null ||
         selectedSize == null ||
@@ -425,27 +426,47 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
     );
 
     //save locally
-    CoffeeLogStore.add(log);
+    try {
+      // 6. Save to Firestore
+      await CoffeeFirestoreService.addCoffeeLog(log);
 
-    debugPrint("Coffee added successfully");
-    debugPrint("Drink: ${log.drinkName}");
-    debugPrint("Size: ${log.size}");
-    debugPrint("Size oz: ${log.sizeOz}");
-    debugPrint("Shots: ${log.shots}");
-    debugPrint("Caffeine: ${log.caffeineMg} mg");
-    debugPrint("Consumed at: ${log.consumedAt}");
-    debugPrint("Total logs: ${CoffeeLogStore.logs.length}");
+      // 7. Save locally
+      // Keep this for now because Home/Tracker/Statistics
+      // are still reading CoffeeLogStore.logs
+      CoffeeLogStore.add(log);
 
-    // Close Cafe Log page after saving
-    // Navigator.pop(context,true); //true means successfully added
-    Navigator.pushReplacement<void, bool>(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            DoneLogScreen(drinkName: log.drinkName ?? "Coffee", caffeineMg: log.caffeineMg),
-      ),
-      result: true,
-    );
+      debugPrint("Coffee added successfully");
+      debugPrint("Drink: ${log.drinkName}");
+      debugPrint("Size: ${log.size}");
+      debugPrint("Size oz: ${log.sizeOz}");
+      debugPrint("Shots: ${log.shots}");
+      debugPrint("Caffeine: ${log.caffeineMg} mg");
+      debugPrint("Consumed at: ${log.consumedAt}");
+      debugPrint("Total local logs: ${CoffeeLogStore.logs.length}");
+
+      // 8. Make sure page still exists
+      if (!mounted) return;
+
+      // 9. Go to Done Log screen
+      Navigator.pushReplacement<void, bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DoneLogScreen(
+            drinkName: log.drinkName ?? "Coffee",
+            caffeineMg: log.caffeineMg,
+          ),
+        ),
+        result: true,
+      );
+    } catch (error) {
+      debugPrint("Failed to save coffee: $error");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to save coffee: $error")));
+    }
   }
 
   Widget _shotBox(int shots) {

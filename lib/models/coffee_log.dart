@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum CoffeeSource { home, cafe }
 
 class CaffeineLog {
@@ -91,7 +93,7 @@ class CaffeineLog {
 
       // Common
       'caffeineMg': caffeineMg,
-      'consumedAt': consumedAt.toIso8601String(),
+      'consumedAt': Timestamp.fromDate(consumedAt)
     };
   }
 
@@ -116,7 +118,7 @@ class CaffeineLog {
 
       // Common
       caffeineMg: (map['caffeineMg'] as num).toInt(),
-      consumedAt: DateTime.parse(map['consumedAt'] as String),
+      consumedAt: (map['consumedAt'] as Timestamp).toDate(),
     );
   }
 }

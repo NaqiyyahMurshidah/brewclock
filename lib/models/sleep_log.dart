@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class SleepLog {
   final DateTime bedtime;
   final DateTime wakeTime;
@@ -11,16 +13,16 @@ class SleepLog {
 
   Map<String, dynamic> toMap() {
     return {
-      'bedtime': bedtime.toIso8601String(),
-      'wakeTime': wakeTime.toIso8601String(),
+      'bedtime': Timestamp.fromDate(bedtime),
+      'wakeTime': Timestamp.fromDate(wakeTime),
       'durationMinutes': duration.inMinutes,
     };
   }
 
   factory SleepLog.fromMap(Map<String, dynamic> map) {
     return SleepLog(
-      bedtime: DateTime.parse(map['bedtime']),
-      wakeTime: DateTime.parse(map['wakeTime']),
+      bedtime: (map['bedtime'] as Timestamp).toDate(),
+      wakeTime: (map['wakeTime'] as Timestamp).toDate(),
       duration: Duration(minutes: map['durationMinutes'] as int),
     );
   }

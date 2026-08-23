@@ -1,4 +1,4 @@
-import 'package:brewclock/services/caffeine/caffeine_log_store.dart';
+
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
@@ -430,11 +430,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       //Save to Firestore
       await CoffeeFirestoreService.addCoffeeLog(log);
 
-      // Save locally
-      // Keep this for now because Home/Tracker/Statistics
-      // are still reading CoffeeLogStore.logs
-      CoffeeLogStore.add(log);
-
       debugPrint("Coffee added successfully");
       debugPrint("Drink: ${log.drinkName}");
       debugPrint("Size: ${log.size}");
@@ -442,7 +437,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       debugPrint("Shots: ${log.shots}");
       debugPrint("Caffeine: ${log.caffeineMg} mg");
       debugPrint("Consumed at: ${log.consumedAt}");
-      debugPrint("Total local logs: ${CoffeeLogStore.logs.length}");
 
       // Make sure page still exists
       if (!mounted) return;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/sleep_log.dart';
-import '../../services/sleep/sleep_log_store.dart';
+import '../../services/firestore/sleep_firestore_service.dart';
 
 class SleepLogCard extends StatefulWidget {
   final TimeOfDay? initialBedtime;
@@ -27,73 +27,95 @@ class _SleepLogCardState extends State<SleepLogCard> {
   void initState() {
     super.initState();
 
-    final SleepLog? latestLog = SleepLogStore.latest;
-
-    bedtime =
-        widget.initialBedtime ??
-        (latestLog == null ? null : TimeOfDay.fromDateTime(latestLog.bedtime));
-    wakeup =
-        widget.initialWakeup ??
-        (latestLog == null ? null : TimeOfDay.fromDateTime(latestLog.wakeTime));
+    bedtime = widget.initialBedtime;
+    wakeup = widget.initialWakeup;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Duration? duration = _calcSleepDuration(bedtime, wakeup);
+    return StreamBuilder<List<SleepLog>>(
+      stream: SleepFirestoreService.getSleepLogs(),
 
-    return Container(
-      padding: const EdgeInsets.all(18),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFF30261F),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.bedtime_rounded, color: Color(0xFFD8A15B), size: 32),
+      builder: (context, snapshot) {
+        final List<SleepLog> logs = snapshot.data ?? [];
+        final SleepLog? latestLog = logs.isEmpty ? null : logs.last;
 
-          const SizedBox(width: 14),
+        final TimeOfDay? displayBedtime =
+            bedtime ??
+            (latestLog == null
+                ? null
+                : TimeOfDay.fromDateTime(latestLog.bedtime));
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Last Night's Sleep",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+        final TimeOfDay? displayWakeup =
+            wakeup ??
+            (latestLog == null
+                ? null
+                : TimeOfDay.fromDateTime(latestLog.wakeTime));
+
+        final Duration? displayDuration = latestLog?.duration;
+
+        return Container(
+          padding: const EdgeInsets.all(18),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: const Color(0xFF30261F),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.bedtime_rounded,
+                color: Color(0xFFD8A15B),
+                size: 32,
+              ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Last Night's Sleep",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Text(
+                      latestLog == null
+                          ? "Not recorded yet"
+                          : "${_formatTime(displayBedtime!)} – "
+                                "${_formatTime(displayWakeup!)} • "
+                                "${_formatDuration(displayDuration!)}",
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              OutlinedButton(
+                onPressed: _timeLog,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFD8A15B),
+                  side: const BorderSide(color: Color(0xFFD8A15B)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-
-                const SizedBox(height: 5),
-
-                Text(
-                  duration == null
-                      ? "Not recorded yet"
-                      : "${_formatTime(bedtime!)} – "
-                            "${_formatTime(wakeup!)} • "
-                            "${_formatDuration(duration)}",
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-
-          OutlinedButton(
-            onPressed: _timeLog,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFFD8A15B),
-              side: const BorderSide(color: Color(0xFFD8A15B)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                child: Text(latestLog == null ? "Log Sleep" : "Edit"),
               ),
-            ),
-            child: Text(duration == null ? "Log Sleep" : "Edit"),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -261,38 +283,59 @@ class _SleepLogCardState extends State<SleepLogCard> {
                     child: OutlinedButton(
                       onPressed: duration == null
                           ? null
-                          : () {
+                          : () async {
                               final SleepLog sleepLog = _createSleepLog(
                                 bedtime: selectedBedtime!,
                                 wakeTime: selectedWakeup!,
                               );
 
-                              SleepLogStore.add(sleepLog);
-
-                              setState(() {
-                                bedtime = TimeOfDay.fromDateTime(
-                                  sleepLog.bedtime,
+                              try {
+                                // Save to Firestore first
+                                await SleepFirestoreService.addSleepLog(
+                                  sleepLog,
                                 );
 
-                                wakeup = TimeOfDay.fromDateTime(
-                                  sleepLog.wakeTime,
+                                if (!mounted) {
+                                  return;
+                                } //check whether the context is safe
+                                if (!sheetContext.mounted) {
+                                  return;
+                                } //check the context its exist
+
+                                setState(() {
+                                  bedtime = TimeOfDay.fromDateTime(
+                                    sleepLog.bedtime,
+                                  );
+
+                                  wakeup = TimeOfDay.fromDateTime(
+                                    sleepLog.wakeTime,
+                                  );
+                                });
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Sleep successfully recorded",
+                                    ),
+                                  ),
                                 );
-                              });
 
-                              // widget.onSaved?.call(
-                              //   selectedBedtime!,
-                              //   selectedWakeup!,
-                              //   duration,
-                              // );
+                                Navigator.pop(sheetContext);
+                              } catch (error) {
+                                debugPrint("Failed to save sleep: $error");
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Sleep successfully recorded"),
-                                ),
-                              );
+                                if (!mounted) return;
 
-                              Navigator.pop(sheetContext);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Failed to save sleep. Please try again.",
+                                    ),
+                                  ),
+                                );
+                              }
                             },
+
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFFD8A15B),
                         disabledForegroundColor: Colors.white30,

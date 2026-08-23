@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+
+import '../../models/coffee_log.dart';
+
 import '../../widgets/tracker/active_caffeine_card.dart';
 import '../../widgets/home/caffeine_limit_card.dart';
 import '../../widgets/home/today_intake_card.dart';
 import '../../widgets/home/drink_loc_card.dart';
 import '../../widgets/home/sleep_log_card.dart';
-import '../../services/caffeine/caffeine_log_store.dart';
+
 import '../../services/caffeine/active_caffeine_calc.dart';
 import '../../services/firestore/user_profile_service.dart';
+import '../../services/firestore/coffee_firestore_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,125 +22,184 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    // Get coffee logs from the local coffee store
-    final logs = CoffeeLogStore.logs;
+    // ==========================================
+    // 1. LISTEN TO COFFEE LOGS FROM FIRESTORE
+    // ==========================================
 
-    final DateTime now = DateTime.now();
+    return StreamBuilder<List<CaffeineLog>>(
+      stream: CoffeeFirestoreService.getCoffeeLogs(),
 
-    // Calculate the total caffeine consumed today
-    final int todayCaffeine = logs
-        .where(
-          (log) =>
-              log.consumedAt.year == now.year &&
+      builder: (context, coffeeSnapshot) {
+        // While coffee logs are loading
+        if (coffeeSnapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            backgroundColor: Color(0xFF1A1411),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // If Firestore gives an error
+        if (coffeeSnapshot.hasError) {
+          return Scaffold(
+            backgroundColor: const Color(0xFF1A1411),
+            body: Center(
+              child: Text(
+                "Failed to load coffee logs",
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
+
+        // ==========================================
+        //  LOGS FROM FIRESTORE
+        final List<CaffeineLog> logs = coffeeSnapshot.data ?? [];
+        final DateTime now = DateTime.now();
+
+        // ==========================================
+        // GET TODAY'S LOGS
+        final List<CaffeineLog> todayLogs = logs.where((log) {
+          return log.consumedAt.year == now.year &&
               log.consumedAt.month == now.month &&
-              log.consumedAt.day == now.day,
-        )
-        .fold<int>(0, (total, log) => total + log.caffeineMg);
+              log.consumedAt.day == now.day;
+        }).toList();
 
-    // Calculate caffeine that is currently active in the body
-    final double activeCaffeine =
-        ActiveCaffeineCalc.calculateTotalActivateCaffeine(logs: logs, now: now);
+        // ==========================================
+        // TOTAL CAFFEINE CONSUMED TODAY
+        final int todayCaffeine = todayLogs.fold<int>(
+          0,
+          (total, log) => total + log.caffeineMg,
+        );
 
-    // Listen to the user's caffeine limit from Firestore
-    return StreamBuilder<int>(
-      stream: UserProfileService.getCaffeineLimitStream(),
+        // ==========================================
+        // ACTIVE CAFFEINE
+        final double activeCaffeine =
+            ActiveCaffeineCalc.calculateTotalActivateCaffeine(
+              logs: logs,
+              now: now,
+            );
 
-      // Used while Firestore is still loading
-      initialData: 400,
+        // ==========================================
+        // LISTEN TO CAFFEINE LIMIT
+        return StreamBuilder<int>(
+          stream: UserProfileService.getCaffeineLimitStream(),
 
-      builder: (context, snapshot) {
-        // Use the Firestore value or 400 if it is unavailable
-        final int caffeineLimit = snapshot.data ?? 400;
+          initialData: 400,
 
-        return Scaffold(
-          backgroundColor: const Color(0xFF1A1411),
+          builder: (context, limitSnapshot) {
+            final int caffeineLimit = limitSnapshot.data ?? 400;
 
-          body: SafeArea(
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(
-                context,
-              ).copyWith(overscroll: false),
+            return Scaffold(
+              backgroundColor: const Color(0xFF1A1411),
 
-              child: ListView(
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.all(24),
+              body: SafeArea(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(overscroll: false),
 
-                children: [
-                  // Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: ListView(
+                    physics: const ClampingScrollPhysics(),
+
+                    padding: const EdgeInsets.all(24),
+
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          StreamBuilder<String>(
-                            stream: UserProfileService.getName(),
-                            builder: (context, snapshot) {
-                              final String name = snapshot.data ?? "User";
+                      // =====================
+                      // HEADER
+                      // =====================
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                              return Text(
-                                "Hello $name!",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                            children: [
+                              // User name
+                              StreamBuilder<String>(
+                                stream: UserProfileService.getName(),
+
+                                builder: (context, snapshot) {
+                                  final String name = snapshot.data ?? "User";
+
+                                  return Text(
+                                    "Hello $name!",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              const Text(
+                                'Tuesday, 19th May',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 18,
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
 
-                          SizedBox(height: 8),
-
-                          Text(
-                            'Tuesday, 19th May',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 18,
-                            ),
+                          const CircleAvatar(
+                            radius: 28,
+                            child: Icon(Icons.person),
                           ),
                         ],
                       ),
 
-                      const CircleAvatar(radius: 28, child: Icon(Icons.person)),
+                      // =====================
+                      // ACTIVE CAFFEINE
+                      // =====================
+                      const SizedBox(height: 30),
+
+                      ActiveCaffeineCard(
+                        caffeine: activeCaffeine.round(),
+                        limit: caffeineLimit,
+                      ),
+
+                      // =====================
+                      // LOG COFFEE
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      const DrinkLocation(),
+
+                      // =====================
+                      // SLEEP LOG
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      const SleepLogCard(),
+
+                      // =====================
+                      // CAFFEINE LIMIT
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      CaffeineLimitCard(
+                        caffeine: todayCaffeine,
+                        limit: caffeineLimit,
+                      ),
+
+                      // =====================
+                      // TODAY'S INTAKE
+                      // =====================
+                      const SizedBox(height: 14),
+
+                      TodayIntakeCard(logs: todayLogs),
+
+                      const SizedBox(height: 20),
                     ],
                   ),
-
-                  // Active caffeine card
-                  const SizedBox(height: 30),
-
-                  ActiveCaffeineCard(
-                    caffeine: activeCaffeine.round(),
-                    limit: caffeineLimit,
-                  ),
-
-                  // Choose Home or Cafe
-                  const SizedBox(height: 20),
-
-                  const DrinkLocation(),
-
-                  // Sleep log card
-                  const SizedBox(height: 20),
-
-                  const SleepLogCard(),
-
-                  // Daily caffeine limit card
-                  const SizedBox(height: 20),
-
-                  CaffeineLimitCard(
-                    caffeine: todayCaffeine,
-                    limit: caffeineLimit,
-                  ),
-
-                  // Today's coffee intake
-                  const SizedBox(height: 14),
-
-                  TodayIntakeCard(logs: logs),
-
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

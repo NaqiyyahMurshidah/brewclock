@@ -427,10 +427,10 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
 
     //save locally
     try {
-      // 6. Save to Firestore
+      //Save to Firestore
       await CoffeeFirestoreService.addCoffeeLog(log);
 
-      // 7. Save locally
+      // Save locally
       // Keep this for now because Home/Tracker/Statistics
       // are still reading CoffeeLogStore.logs
       CoffeeLogStore.add(log);
@@ -444,10 +444,10 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       debugPrint("Consumed at: ${log.consumedAt}");
       debugPrint("Total local logs: ${CoffeeLogStore.logs.length}");
 
-      // 8. Make sure page still exists
+      // Make sure page still exists
       if (!mounted) return;
 
-      // 9. Go to Done Log screen
+      //Go to Done Log screen
       Navigator.pushReplacement<void, bool>(
         context,
         MaterialPageRoute(

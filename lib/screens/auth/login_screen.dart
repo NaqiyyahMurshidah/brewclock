@@ -73,8 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       debugPrint("LOGIN SUCCESS: ${result.user?.email}");
-
-      } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error) {
       debugPrint("LOGIN ERROR: ${error.code}");
       debugPrint("MESSAGE: ${error.message}");
 
@@ -105,7 +104,6 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text("Something went wrong. Please try again."),
         ),
       );
-
     } finally {
       if (mounted) {
         setState(() {
@@ -183,8 +181,44 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          // Firebase reset-password later.
+                        onPressed: () async {
+                          // Firebase reset-password
+                          final String email = _emailController.text.trim();
+
+                          if (email.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please enter your email first"),
+                              ),
+                            );
+                            return;
+                          }
+
+                          try {
+                            await _authService.sendPasswordResetEmail(
+                              email: email,
+                            );
+
+                            debugPrint("RESET EMAIL SENT TO: $email");
+
+                            if (!context.mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Password reset email sent. Check your inbox and spam folder."),
+                              ),
+                            );
+                          } on FirebaseAuthException catch (error) {
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  error.message ?? "Unable to send reset email",
+                                ),
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           "Forgot password?",

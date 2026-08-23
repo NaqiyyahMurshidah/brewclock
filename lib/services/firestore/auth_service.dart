@@ -35,4 +35,9 @@ class AuthService {
 
   //auth status
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  //reset password by reset email
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
 }

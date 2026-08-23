@@ -23,4 +23,24 @@ class CoffeeFirestoreService {
   static Future<void> addCoffeeLog(CaffeineLog log) async {
     await coffeeLogsCollection.add(log.toMap());
   }
+
+  static Stream<List<CaffeineLog>> getCoffeeLogs() {
+    final user = currentUser;
+
+    if (user == null) {
+      return Stream.value([]);
+    }
+
+    return _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('coffee_logs')
+        .orderBy('consumedAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return CaffeineLog.fromMap(doc.data());
+          }).toList();
+        });
+  }
 }

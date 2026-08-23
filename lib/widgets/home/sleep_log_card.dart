@@ -274,9 +274,6 @@ class _SleepLogCardState extends State<SleepLogCard> {
                                   sleepLog,
                                 );
 
-                                // Keep local store for now
-                                SleepLogStore.add(sleepLog);
-
                                 if (!mounted) return; //check whether the context is safe
                                 if (!sheetContext.mounted) return; //check the context its exist
 

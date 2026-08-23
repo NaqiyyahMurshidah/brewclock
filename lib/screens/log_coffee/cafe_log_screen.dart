@@ -430,11 +430,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       //Save to Firestore
       await CoffeeFirestoreService.addCoffeeLog(log);
 
-      // Save locally
-      // Keep this for now because Home/Tracker/Statistics
-      // are still reading CoffeeLogStore.logs
-      CoffeeLogStore.add(log);
-
       debugPrint("Coffee added successfully");
       debugPrint("Drink: ${log.drinkName}");
       debugPrint("Size: ${log.size}");

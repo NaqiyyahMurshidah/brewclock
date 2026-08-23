@@ -309,8 +309,6 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
       //save to firebase
       await CoffeeFirestoreService.addCoffeeLog(log);
 
-      CoffeeLogStore.add(log);
-
       debugPrint("Home coffee added!");
       debugPrint("Preparation: ${log.preparation}");
       debugPrint("Brand: ${log.brand}");

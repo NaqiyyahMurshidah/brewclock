@@ -56,13 +56,13 @@ class DefaultFirebaseOptions {
     projectId: 'brewclock',
     storageBucket: 'brewclock.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDwE-hEzbeRQGbMNDJr8J7AnQz3pXeLDC8',
     appId: '1:670499247481:ios:73fb410d4b3e44ab9b0ba8',
     messagingSenderId: '670499247481',
     projectId: 'brewclock',
     storageBucket: 'brewclock.firebasestorage.app',
+    iosClientId: '670499247481-s6v78rahulgq1et3cldbuskoujvc1ugr.apps.googleusercontent.com',
     iosBundleId: 'com.example.brewclock',
   );
 }

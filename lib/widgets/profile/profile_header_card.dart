@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:brewclock/services/firestore/user_profile_service.dart';
+import 'package:brewclock/services/firestore/profile_image_service.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
-  final String userName;
-  final String userEmail;
-  final String imageUrl;
   final VoidCallback onEditProfile;
 
-  const ProfileHeaderCard({
-    super.key,
-    required this.userName,
-    required this.userEmail,
-    required this.imageUrl,
-    required this.onEditProfile,
-  });
+  const ProfileHeaderCard({super.key, required this.onEditProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +18,31 @@ class ProfileHeaderCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 46,
-            backgroundColor: const Color(0xFFE7E3DF),
-            backgroundImage: NetworkImage(imageUrl),
+          StreamBuilder<String?>(
+            stream: ProfileImageService.getProfileImageStream(),
+            builder: (context, snapshot) {
+              final String? imageUrl = snapshot.data;
+
+              return CircleAvatar(
+                radius: 46,
+                backgroundColor: const Color(0xFFE7E3DF),
+
+                backgroundImage: imageUrl != null && imageUrl.isNotEmpty
+                    ? NetworkImage(imageUrl)
+                    : null,
+
+                child: imageUrl == null || imageUrl.isEmpty
+                    ? const Icon(Icons.person, color: Colors.black54, size: 46)
+                    : null,
+              );
+            },
           ),
 
+          // CircleAvatar(
+          //   radius: 46,
+          //   backgroundColor: const Color(0xFFE7E3DF),
+          //   backgroundImage: NetworkImage(imageUrl),
+          // ),
           const SizedBox(width: 16),
 
           Expanded(
@@ -55,7 +66,7 @@ class ProfileHeaderCard extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 5),
-                
+
                 StreamBuilder<String>(
                   stream: UserProfileService.getEmail(),
                   builder: (context, snapshot) {

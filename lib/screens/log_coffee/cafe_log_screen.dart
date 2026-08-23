@@ -1,4 +1,4 @@
-import 'package:brewclock/services/caffeine/caffeine_log_store.dart';
+
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
@@ -437,7 +437,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       debugPrint("Shots: ${log.shots}");
       debugPrint("Caffeine: ${log.caffeineMg} mg");
       debugPrint("Consumed at: ${log.consumedAt}");
-      debugPrint("Total local logs: ${CoffeeLogStore.logs.length}");
 
       // Make sure page still exists
       if (!mounted) return;

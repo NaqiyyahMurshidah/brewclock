@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/sleep_log.dart';
 import '../../services/sleep/sleep_log_store.dart';
+import '../../services/firestore/sleep_firestore_service.dart';
 
 class SleepLogCard extends StatefulWidget {
   final TimeOfDay? initialBedtime;
@@ -261,38 +262,58 @@ class _SleepLogCardState extends State<SleepLogCard> {
                     child: OutlinedButton(
                       onPressed: duration == null
                           ? null
-                          : () {
+                          : () async {
                               final SleepLog sleepLog = _createSleepLog(
                                 bedtime: selectedBedtime!,
                                 wakeTime: selectedWakeup!,
                               );
 
-                              SleepLogStore.add(sleepLog);
-
-                              setState(() {
-                                bedtime = TimeOfDay.fromDateTime(
-                                  sleepLog.bedtime,
+                              try {
+                                // Save to Firestore first
+                                await SleepFirestoreService.addSleepLog(
+                                  sleepLog,
                                 );
 
-                                wakeup = TimeOfDay.fromDateTime(
-                                  sleepLog.wakeTime,
+                                // Keep local store for now
+                                SleepLogStore.add(sleepLog);
+
+                                if (!mounted) return; //check whether the context is safe
+                                if (!sheetContext.mounted) return; //check the context its exist
+
+                                setState(() {
+                                  bedtime = TimeOfDay.fromDateTime(
+                                    sleepLog.bedtime,
+                                  );
+
+                                  wakeup = TimeOfDay.fromDateTime(
+                                    sleepLog.wakeTime,
+                                  );
+                                });
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Sleep successfully recorded",
+                                    ),
+                                  ),
                                 );
-                              });
 
-                              // widget.onSaved?.call(
-                              //   selectedBedtime!,
-                              //   selectedWakeup!,
-                              //   duration,
-                              // );
+                                Navigator.pop(sheetContext);
+                              } catch (error) {
+                                debugPrint("Failed to save sleep: $error");
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Sleep successfully recorded"),
-                                ),
-                              );
+                                if (!mounted) return;
 
-                              Navigator.pop(sheetContext);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Failed to save sleep. Please try again.",
+                                    ),
+                                  ),
+                                );
+                              }
                             },
+
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFFD8A15B),
                         disabledForegroundColor: Colors.white30,

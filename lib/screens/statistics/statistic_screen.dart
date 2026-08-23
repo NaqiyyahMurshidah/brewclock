@@ -72,7 +72,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // FILTER COFFEE LOGS
-        // =========================================
 
         final filteredCoffeeLogs = StatisticsService.filterLogs(
           logs: coffeeLogs,
@@ -82,7 +81,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // FILTER SLEEP LOGS
-        // =========================================
 
         final filteredSleepLogs = StatisticsService.filtersSleepLogs(
           logs: sleepLogs,
@@ -92,7 +90,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // LATEST SLEEP
-        // =========================================
 
         final SleepLog? latestSleep = filteredSleepLogs.isEmpty
             ? null
@@ -120,7 +117,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // CAFFEINE CHART
-        // =========================================
 
         final List<FlSpot> caffeineSpots = List.generate(7, (index) {
           final DateTime day = now.subtract(Duration(days: 6 - index));
@@ -139,7 +135,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // AVERAGE CAFFEINE
-        // =========================================
 
         final double avgCaffeine = StatisticsService.averageCaffeine(
           filteredCoffeeLogs,
@@ -147,7 +142,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // TOP DRINK
-        // =========================================
 
         final String topDrink = StatisticsService.topDrink(filteredCoffeeLogs);
 
@@ -158,7 +152,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
         // =========================================
         // SLEEP CHART
-        // =========================================
 
         final List<FlSpot> sleepSpots = List.generate(7, (index) {
           final DateTime day = now.subtract(Duration(days: 6 - index));
@@ -174,15 +167,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           }
 
           final SleepLog sleepLog = daySleepLogs.last;
-
           final double sleepHours = sleepLog.duration.inMinutes / 60.0;
 
           return FlSpot(index.toDouble(), sleepHours);
         });
-
-        // =========================================
-        // UI
-        // =========================================
 
         return Scaffold(
           backgroundColor: const Color(0xFF1A1411),
@@ -195,7 +183,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
               child: ListView(
                 padding: const EdgeInsets.all(24),
-
                 physics: const ClampingScrollPhysics(),
 
                 children: [
@@ -218,19 +205,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ),
 
                   const SizedBox(height: 20),
-
                   const SizedBox(height: 22),
 
                   SleepScoreCard(
                     score: 98,
                     quality: "Deeply Restful",
-
                     bedtime: bedtimeText,
-
                     wakeTime: wakeTimeText,
-
                     duration: durationText,
-
                     isExpanded: true,
                   ),
 
@@ -238,11 +220,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
                   TopDrinkCard(
                     topDrinkMg: topDrinkMg,
-
                     caffeineType: topDrink,
-
                     maxCaffeine: 200,
-
                     avgCaffeine: avgCaffeine.round(),
                   ),
 
@@ -250,7 +229,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
                   CaffSleepChartCard(
                     caffeineSpots: caffeineSpots,
-
                     sleepSpots: sleepSpots,
                   ),
 

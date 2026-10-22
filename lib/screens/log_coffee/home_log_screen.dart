@@ -1,9 +1,9 @@
-import 'package:brewclock/services/caffeine_log_store.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
-import '../../services/caffeine_calculator.dart';
+import '../../services/caffeine/caffeine_calculator.dart';
 import '../../models/coffee_log.dart';
 import '../log_coffee/done_log_screen.dart';
+import '../../services/firestore/coffee_firestore_service.dart';
 
 class HomeLogCoffee extends StatefulWidget {
   const HomeLogCoffee({super.key});
@@ -272,7 +272,7 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
     }
   }
 
-  void _addCoffee() {
+  Future<void> _addCoffee() async {
     if (selectedPrep == null ||
         selectedBrand == null ||
         selectedAmount == null ||
@@ -304,24 +304,38 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
       consumedAt: consumedAt,
     );
 
-    CoffeeLogStore.add(log);
+    try {
+      //save to firebase
+      await CoffeeFirestoreService.addCoffeeLog(log);
 
-    debugPrint("Home coffee added!");
-    debugPrint("Preparation: ${log.preparation}");
-    debugPrint("Brand: ${log.brand}");
-    debugPrint("Amount: ${log.quantity}");
-    debugPrint("Caffeine: ${log.caffeineMg} mg");
-    debugPrint("Time: ${log.consumedAt}");
+      debugPrint("Home coffee added!");
+      debugPrint("Preparation: ${log.preparation}");
+      debugPrint("Brand: ${log.brand}");
+      debugPrint("Amount: ${log.quantity}");
+      debugPrint("Caffeine: ${log.caffeineMg} mg");
+      debugPrint("Time: ${log.consumedAt}");
 
-    Navigator.pushReplacement<void, bool>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DoneLogScreen(
-          drinkName: log.drinkName ?? "Coffee",
-          caffeineMg: log.caffeineMg,
+      //make sure page exist
+      if (!mounted) return;
+
+      Navigator.pushReplacement<void, bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DoneLogScreen(
+            drinkName: log.drinkName ?? "Coffee",
+            caffeineMg: log.caffeineMg,
+          ),
         ),
-      ),
-      result: true,
-    );
+        result: true,
+      );
+    } catch (error) {
+      debugPrint("Failed to save coffee: $error");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to save coffee: $error")));
+    }
   }
 }

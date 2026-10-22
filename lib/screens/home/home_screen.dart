@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+
+import '../../models/coffee_log.dart';
+
 import '../../widgets/tracker/active_caffeine_card.dart';
 import '../../widgets/home/caffeine_limit_card.dart';
 import '../../widgets/home/today_intake_card.dart';
 import '../../widgets/home/drink_loc_card.dart';
-import '../../services/caffeine_log_store.dart';
-import '../../services/active_caffeine_calc.dart';
 import '../../widgets/home/sleep_log_card.dart';
-//crossAxisAllignment.start = make it aligns text to the left (start)
+
+import '../../services/caffeine/active_caffeine_calc.dart';
+import '../../services/firestore/user_profile_service.dart';
+import '../../services/firestore/coffee_firestore_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,95 +22,186 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    //take data from caffeelogstore
-    final logs = CoffeeLogStore.logs;
+    // ==========================================
+    // 1. LISTEN TO COFFEE LOGS FROM FIRESTORE
+    // ==========================================
 
-    final DateTime now = DateTime.now();
+    return StreamBuilder<List<CaffeineLog>>(
+      stream: CoffeeFirestoreService.getCoffeeLogs(),
 
-    //total caffeine consumed today
-    final int todayCaffeine = logs
-        .where(
-          (log) =>
-              log.consumedAt.year == now.year &&
+      builder: (context, coffeeSnapshot) {
+        // While coffee logs are loading
+        if (coffeeSnapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            backgroundColor: Color(0xFF1A1411),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // If Firestore gives an error
+        if (coffeeSnapshot.hasError) {
+          return Scaffold(
+            backgroundColor: const Color(0xFF1A1411),
+            body: Center(
+              child: Text(
+                "Failed to load coffee logs",
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
+
+        // ==========================================
+        //  LOGS FROM FIRESTORE
+        final List<CaffeineLog> logs = coffeeSnapshot.data ?? [];
+        final DateTime now = DateTime.now();
+
+        // ==========================================
+        // GET TODAY'S LOGS
+        final List<CaffeineLog> todayLogs = logs.where((log) {
+          return log.consumedAt.year == now.year &&
               log.consumedAt.month == now.month &&
-              log.consumedAt.day == now.day,
-        )
-        .fold(0, (total, log) => total + log.caffeineMg);
+              log.consumedAt.day == now.day;
+        }).toList();
 
-    //its from user profile / settings
-    const int caffeineLimit = 400;
-
-    final double activeCaffeine =
-        ActiveCaffeineCalc.calculateTotalActivateCaffeine(
-          logs: logs,
-          now: DateTime.now(),
+        // ==========================================
+        // TOTAL CAFFEINE CONSUMED TODAY
+        final int todayCaffeine = todayLogs.fold<int>(
+          0,
+          (total, log) => total + log.caffeineMg,
         );
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF1A1411),
+        // ==========================================
+        // ACTIVE CAFFEINE
+        final double activeCaffeine =
+            ActiveCaffeineCalc.calculateTotalActivateCaffeine(
+              logs: logs,
+              now: now,
+            );
 
-      body: SafeArea(
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
-          child: ListView(
-            physics: ClampingScrollPhysics(),
+        // ==========================================
+        // LISTEN TO CAFFEINE LIMIT
+        return StreamBuilder<int>(
+          stream: UserProfileService.getCaffeineLimitStream(),
 
-            padding: const EdgeInsets.all(24.0),
+          initialData: 400,
 
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Hello shida !",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+          builder: (context, limitSnapshot) {
+            final int caffeineLimit = limitSnapshot.data ?? 400;
+
+            return Scaffold(
+              backgroundColor: const Color(0xFF1A1411),
+
+              body: SafeArea(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(overscroll: false),
+
+                  child: ListView(
+                    physics: const ClampingScrollPhysics(),
+
+                    padding: const EdgeInsets.all(24),
+
+                    children: [
+                      // =====================
+                      // HEADER
+                      // =====================
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                            children: [
+                              // User name
+                              StreamBuilder<String>(
+                                stream: UserProfileService.getName(),
+
+                                builder: (context, snapshot) {
+                                  final String name = snapshot.data ?? "User";
+
+                                  return Text(
+                                    "Hello $name!",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              const Text(
+                                'Tuesday, 19th May',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const CircleAvatar(
+                            radius: 28,
+                            child: Icon(Icons.person),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Tuesday, 19th may",
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
+
+                      // =====================
+                      // ACTIVE CAFFEINE
+                      // =====================
+                      const SizedBox(height: 30),
+
+                      ActiveCaffeineCard(
+                        caffeine: activeCaffeine.round(),
+                        limit: caffeineLimit,
                       ),
+
+                      // =====================
+                      // LOG COFFEE
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      const DrinkLocation(),
+
+                      // =====================
+                      // SLEEP LOG
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      const SleepLogCard(),
+
+                      // =====================
+                      // CAFFEINE LIMIT
+                      // =====================
+                      const SizedBox(height: 20),
+
+                      CaffeineLimitCard(
+                        caffeine: todayCaffeine,
+                        limit: caffeineLimit,
+                      ),
+
+                      // =====================
+                      // TODAY'S INTAKE
+                      // =====================
+                      const SizedBox(height: 14),
+
+                      TodayIntakeCard(logs: todayLogs),
+
+                      const SizedBox(height: 20),
                     ],
                   ),
-
-                  const CircleAvatar(radius: 28, child: Icon(Icons.person)),
-                ],
+                ),
               ),
-
-              //widgets/active_caffeine_card.dart
-              const SizedBox(height: 30),
-              ActiveCaffeineCard(
-                caffeine: activeCaffeine.round(),
-                limit: caffeineLimit,
-              ),
-
-              // drink_loc.dart card at /widget/common
-              const SizedBox(height: 20),
-              DrinkLocation(),
-
-              //sleep_log_card.dart widgets/home
-              const SizedBox(height: 20),
-              SleepLogCard(),
-
-              const SizedBox(height: 20),
-              CaffeineLimitCard(caffeine: todayCaffeine, limit: caffeineLimit),
-
-              // today's intake
-              const SizedBox(height: 14),
-              TodayIntakeCard(logs: logs),
-
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
-    ); //Scaffold skelaton of the screen
+            );
+          },
+        );
+      },
+    );
   }
 }

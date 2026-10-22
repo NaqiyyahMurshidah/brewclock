@@ -5,9 +5,6 @@ import 'package:brewclock/widgets/profile/profile_settings_card.dart';
 import 'package:brewclock/widgets/profile/profile_stat_card.dart';
 import 'package:flutter/material.dart';
 import '../../screens/settings/goals_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/firestore/user_profile_service.dart';
-import '../../services/firestore/profile_image_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

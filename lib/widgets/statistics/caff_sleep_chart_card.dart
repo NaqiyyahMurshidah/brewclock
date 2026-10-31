@@ -17,7 +17,7 @@ class CaffSleepChartCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: Color(0xFF3B2A20),
+        color: Color(0xFF30261F),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -80,7 +80,7 @@ class _ChartLegend extends StatelessWidget {
                 width: 9,
                 height: 9,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B2A20),
+                  color: const Color(0xFF30261F),
                   shape: BoxShape.circle,
                   border: Border.all(color: color, width: 3),
                 ),
@@ -148,14 +148,14 @@ LineChartData _chartData(List<FlSpot> caffeineSpots, List<FlSpot> sleepSpots) {
 
       getDrawingHorizontalLine: (value) {
         return FlLine(
-          color: Colors.white.withOpacity(.08),
+          color: Colors.white.withValues(alpha: .08),
           strokeWidth: 1,
           dashArray: [5, 5],
         );
       },
       getDrawingVerticalLine: (value) {
         return FlLine(
-          color: Colors.white.withOpacity(.08),
+          color: Colors.white.withValues(alpha: .08),
           strokeWidth: 1,
           dashArray: [5, 5],
         );

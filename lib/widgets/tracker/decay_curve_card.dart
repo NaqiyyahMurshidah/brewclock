@@ -17,7 +17,7 @@ class DecayCurveCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: Color(0xFF3B2A20),
+        color: Color(0xFF30261F),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(

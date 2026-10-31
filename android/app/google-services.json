@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "670499247481",
+    "project_id": "brewclock",
+    "storage_bucket": "brewclock.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670499247481:android:b0138895926e3a479b0ba8",
+        "android_client_info": {
+          "package_name": "com.example.brewclock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670499247481-ikqaedmksg19atpaov03kmvivuecvp71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlhKRcvtir-8JECW0vJRwFSy7yQBHpDQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "670499247481-ikqaedmksg19atpaov03kmvivuecvp71.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "670499247481-s6v78rahulgq1et3cldbuskoujvc1ugr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.brewclock"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

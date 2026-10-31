@@ -2,7 +2,7 @@
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 
-import '../models/coffee_log.dart';
+import '../../models/coffee_log.dart';
 
 class ActiveCaffeineCalc {
   static double calculateTotalActivateCaffeine({

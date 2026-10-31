@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../widgets/common/selection_card.dart';
 import '../../models/coffee_log.dart';
@@ -35,343 +34,509 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
         backgroundColor: const Color(0xFF1A1411),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: ListView(
-            children: [
-              //page header here
-              const SizedBox(height: 10),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: ListView(
+              children: [
+                //page header here
+                const SizedBox(height: 10),
 
-              Text(
-                "Pick a drink : ",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-
-              const SizedBox(height: 10),
-
-              //drink card 1 layer
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Espresso",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Espresso",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Espresso"
-                              ? null
-                              : "Espresso";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Double Espresso",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Double Espresso",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Double Espresso"
-                              ? null
-                              : "Double Espresso";
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Latte",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Latte",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Latte"
-                              ? null
-                              : "Latte";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Cappuccino",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Cappuccino",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Cappuccino"
-                              ? null
-                              : "Cappuccino";
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Americano",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Americano",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Americano"
-                              ? null
-                              : "Americano";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Flat White",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Flat White",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Flat White"
-                              ? null
-                              : "Flat White";
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Mocha",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Mocha",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Mocha"
-                              ? null
-                              : "Mocha";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Macchiato",
-                      value: 110,
-                      unit: "mg",
-                      selected: selectedDrink == "Macchiato",
-                      onTap: () {
-                        setState(() {
-                          selectedDrink = selectedDrink == "Macchiato"
-                              ? null
-                              : "Macchiato";
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              //pick size
-              Text(
-                "Size : ",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-
-              const SizedBox(height: 10),
-              //select size
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Small",
-                      value: 4,
-                      unit: "oz",
-                      selected: selectedSize == "Small",
-                      onTap: () {
-                        setState(() {
-                          selectedSize = selectedSize == "Small"
-                              ? null
-                              : "Small";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Medium",
-                      value: 8,
-                      unit: "oz",
-                      selected: selectedSize == "Medium",
-                      onTap: () {
-                        setState(() {
-                          selectedSize = selectedSize == "Medium"
-                              ? null
-                              : "Medium";
-                        });
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: SelectionCard(
-                      label: "Large",
-                      value: 12,
-                      unit: "oz",
-                      selected: selectedSize == "Large",
-                      onTap: () {
-                        setState(() {
-                          selectedSize = selectedSize == "Large"
-                              ? null
-                              : "Large";
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              //pick shots
-              Text(
-                "Shot : ",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Expanded(child: _shotBox(1)),
-                  const SizedBox(width: 12),
-
-                  Expanded(child: _shotBox(2)),
-                  const SizedBox(width: 12),
-
-                  Expanded(child: _shotBox(3)),
-                  const SizedBox(width: 12),
-
-                  Expanded(child: _shotBox(4)),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              //pick time
-              Text(
-                "Time : ",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-
-              const SizedBox(height: 10),
-
-              InkWell(
-                onTap: _pickTime,
-                borderRadius: BorderRadius.circular(18),
-
-                child: Container(
-                  width: 330,
-                  height: 65,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3A291F),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        selectedTime == null
-                            ? "Select time"
-                            : selectedTime!.format(context),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      const Icon(
-                        Icons.access_time,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ],
-                  ),
+                Text(
+                  "Pick a drink : ",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-              ),
 
-              //submit button
-              const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
-              SizedBox(
-                width: double.infinity,
-                height: 35,
-                child: ElevatedButton(
-                  onPressed: canLogCoffee ? _addCoffee : null,
+                //drink card 1 layer
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Espresso",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Espresso",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Espresso"
+                                ? null
+                                : "Espresso";
+                          });
+                        },
+                      ),
+                    ),
 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD8B17B),
-                    foregroundColor: const Color(0xFF1A1411),
+                    const SizedBox(width: 12),
 
-                    shape: RoundedRectangleBorder(
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Double Espresso",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Double Espresso",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Double Espresso"
+                                ? null
+                                : "Double Espresso";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Latte",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Latte",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Latte"
+                                ? null
+                                : "Latte";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Cappuccino",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Cappuccino",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Cappuccino"
+                                ? null
+                                : "Cappuccino";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Americano",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Americano",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Americano"
+                                ? null
+                                : "Americano";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Flat White",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Flat White",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Flat White"
+                                ? null
+                                : "Flat White";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Mocha",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Mocha",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Mocha"
+                                ? null
+                                : "Mocha";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Macchiato",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Macchiato",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Macchiato"
+                                ? null
+                                : "Macchiato";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Caramel Macchiato",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Caramel Macchiato",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Caramel Macchiato"
+                                ? null
+                                : "Caramel Macchiato";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "White Coffee",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "White Coffee",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "White Coffee"
+                                ? null
+                                : "White Coffee";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Vanilla Latte",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Vanilla Latte",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Vanilla Latte"
+                                ? null
+                                : "Vanilla Latte";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "French Vanilla",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "French Vanilla",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "French Vanilla"
+                                ? null
+                                : "French Vanilla";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Long Black",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Long Black",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Long Black"
+                                ? null
+                                : "Long Black";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Cham",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Cham",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Cham"
+                                ? null
+                                : "Cham";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Pour Over",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Pour Over",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Pour Over"
+                                ? null
+                                : "Pour Over";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Kopi Peng",
+                        value: 110,
+                        unit: "mg",
+                        selected: selectedDrink == "Kopi Peng",
+                        onTap: () {
+                          setState(() {
+                            selectedDrink = selectedDrink == "Kopi Peng"
+                                ? null
+                                : "Kopi Peng";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                //pick size
+                Text(
+                  "Size : ",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+
+                const SizedBox(height: 10),
+                //select size
+                Row(
+                  children: [
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Small",
+                        value: 4,
+                        unit: "oz",
+                        selected: selectedSize == "Small",
+                        onTap: () {
+                          setState(() {
+                            selectedSize = selectedSize == "Small"
+                                ? null
+                                : "Small";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Medium",
+                        value: 8,
+                        unit: "oz",
+                        selected: selectedSize == "Medium",
+                        onTap: () {
+                          setState(() {
+                            selectedSize = selectedSize == "Medium"
+                                ? null
+                                : "Medium";
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: SelectionCard(
+                        label: "Large",
+                        value: 12,
+                        unit: "oz",
+                        selected: selectedSize == "Large",
+                        onTap: () {
+                          setState(() {
+                            selectedSize = selectedSize == "Large"
+                                ? null
+                                : "Large";
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                //pick shots
+                Text(
+                  "Shot : ",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(child: _shotBox(1)),
+                    const SizedBox(width: 12),
+
+                    Expanded(child: _shotBox(2)),
+                    const SizedBox(width: 12),
+
+                    Expanded(child: _shotBox(3)),
+                    const SizedBox(width: 12),
+
+                    Expanded(child: _shotBox(4)),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                //pick time
+                Text(
+                  "Time : ",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+
+                const SizedBox(height: 10),
+
+                InkWell(
+                  onTap: _pickTime,
+                  borderRadius: BorderRadius.circular(18),
+
+                  child: Container(
+                    width: 330,
+                    height: 65,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3A291F),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    elevation: 0,
-                  ),
 
-                  child: const Text(
-                    "Add Coffee",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedTime == null
+                              ? "Select time"
+                              : selectedTime!.format(context),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+
+                        const Icon(
+                          Icons.access_time,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+
+                //submit button
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 35,
+                  child: ElevatedButton(
+                    onPressed: canLogCoffee ? _addCoffee : null,
+
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD8B17B),
+                      foregroundColor: const Color(0xFF1A1411),
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      elevation: 0,
+                    ),
+
+                    child: const Text(
+                      "Add Coffee",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

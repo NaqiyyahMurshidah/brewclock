@@ -13,34 +13,46 @@ class HomeLogCoffee extends StatefulWidget {
 }
 
 class _HomeLogCoffeeState extends State<HomeLogCoffee> {
-  String? selectedPrep;
+  HomePrep? selectedPrep;
   String? selectedBrand;
   TimeOfDay? selectedTime;
   int? selectedAmount;
 
+  //custom other input
+  final TextEditingController _customNameController = TextEditingController();
+  final TextEditingController _customMgController = TextEditingController();
+
+  static const TextStyle _sectionStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+  );
+
+  @override
+  void dispose() {
+    _customNameController.dispose();
+    _customMgController.dispose();
+    super.dispose();
+  }
+
+  String _capitalize(String s) =>
+      s.isEmpty ? s : "${s[0].toUpperCase()}${s.substring(1)}";
+
+  bool get _isCustom => selectedBrand == CaffeineCalculator.customBrand;
+
+  double? get _customMg =>
+      double.tryParse(_customMgController.text.trim().replaceAll(',', '.'));
+
+  bool get _customValid => CaffeineCalculator.isValid(_customMg);
+
   @override
   Widget build(BuildContext context) {
-    final Map<String, List<String>> brandOptions = {
-      "Instant Coffee": ["Nescafé Classic", "Maxwell House", "Moccona"],
-      "Ground Coffee": ["Starbucks", "Lavazza", "Illy"],
-      "Coffee Sachet": ["OldTown", "Aik Cheong", "Ah Huat", "Nescafé"],
-      "Coffee Capsule": ["Nespresso", "Starbucks", "L'OR", "Dolce Gusto"],
-      "Espresso Machine": ["Lavazza", "Illy", "Starbucks", "Custom Beans"],
-    };
-
-    final Map<String, String> amountUnits = {
-      "Instant Coffee": "teaspoon",
-      "Ground Coffee": "tablespoon",
-      "Coffee Sachet": "sachet",
-      "Coffee Capsule": "capsule",
-      "Espresso Machine": "shots",
-    };
-
     final bool canAddCoffee =
         selectedPrep != null &&
         selectedBrand != null &&
         selectedTime != null &&
-        selectedAmount != null;
+        selectedAmount != null &&
+        (!_isCustom || _customValid);
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
@@ -50,198 +62,222 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
         title: const Text("Log Coffee", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF1A1411),
       ),
-
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-
-          child: ListView(
-            children: [
-              //prep coffe section How did you prepare your coffee?
-              const Text(
-                "Preparation :",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  Expanded(child: _prepCard("Instant Coffee")),
-                  const SizedBox(width: 12),
-
-                  Expanded(child: _prepCard("Ground Coffee")),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  Expanded(child: _prepCard("Coffee Sachet")),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(child: _prepCard("Coffee Capsule")),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              _prepCard("Espresso Machine"),
-
-              if (selectedPrep != null) ...[
-                const SizedBox(height: 28),
-
-                //select brand next
-                const Text(
-                  "Brand :",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                ...brandOptions[selectedPrep]!.map((brand) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _brandCard(brand),
-                  );
-                }),
-              ],
-
-              if (selectedPrep != null) ...[
-                const SizedBox(height: 10),
-
-                Text(
-                  "${amountUnits[selectedPrep]} Amount :",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: ListView(
+              children: [
+                // Preparation
+                const Text("Preparation :", style: _sectionStyle),
                 const SizedBox(height: 12),
 
                 Row(
-                  children: List.generate(4, (index) {
-                    final amountValue = index + 1;
+                  children: [
+                    Expanded(child: _prepCard(HomePrep.instant)),
+                    const SizedBox(width: 12),
+                    Expanded(child: _prepCard(HomePrep.ground)),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-                    return Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: amountValue == 4 ? 0 : 12,
-                        ),
-                        child: SelectionCard(
-                          label: "$amountValue",
-                          selected: selectedAmount == amountValue,
-                          onTap: () {
-                            setState(() {
-                              selectedAmount = selectedAmount == amountValue
-                                  ? null
-                                  : amountValue;
-                            });
-                          },
-                        ),
-                      ),
+                Row(
+                  children: [
+                    Expanded(child: _prepCard(HomePrep.sachet)),
+                    const SizedBox(width: 12),
+                    Expanded(child: _prepCard(HomePrep.capsule)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                _prepCard(HomePrep.espresso),
+
+                // Brand
+                if (selectedPrep != null) ...[
+                  const SizedBox(height: 28),
+                  const Text("Brand :", style: _sectionStyle),
+                  const SizedBox(height: 12),
+
+                  ...[
+                    ...CaffeineCalculator.brandsFor(selectedPrep!),
+                    CaffeineCalculator.customBrand,
+                  ].map((brand) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _brandCard(brand),
                     );
                   }),
+                ],
+
+                //custom caffeien inputs
+                if (selectedPrep != null && _isCustom) ...[
+                  const SizedBox(height: 6),
+                  _customField(
+                    controller: _customNameController,
+                    label: "Brand name (optional)",
+                    keyboardType: TextInputType.text,
+                  ),
+                  const SizedBox(height: 12),
+                  _customField(
+                    controller: _customMgController,
+                    label: "Caffeine per ${selectedPrep!.unitLabel} (mg)",
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+
+                    errorText:
+                        _customMgController.text.trim().isNotEmpty &&
+                            !_customValid
+                        ? "Enter a value between 1 and "
+                              "${CaffeineCalculator.maxPerUnit.toInt()} mg"
+                        : null,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Check the packaging, or enter your best estimate.",
+                    style: TextStyle(color: Colors.white54, fontSize: 13),
+                  ),
+                ],
+
+                // Amount
+                if (selectedPrep != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    "${_capitalize(selectedPrep!.unitLabel)} Amount :",
+                    style: _sectionStyle,
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: List.generate(4, (index) {
+                      final amountValue = index + 1;
+
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: amountValue == 4 ? 0 : 12,
+                          ),
+                          child: SelectionCard(
+                            label: "$amountValue",
+                            selected: selectedAmount == amountValue,
+                            onTap: () {
+                              setState(() {
+                                selectedAmount = selectedAmount == amountValue
+                                    ? null
+                                    : amountValue;
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+
+                // Time
+                const SizedBox(height: 24),
+                const Text("Time :", style: _sectionStyle),
+                const SizedBox(height: 12),
+
+                InkWell(
+                  onTap: _pickTime,
+                  borderRadius: BorderRadius.circular(18),
+                  child: Container(
+                    width: double.infinity,
+                    height: 65,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3A291F),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedTime == null
+                              ? "Select time"
+                              : selectedTime!.format(context),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.access_time,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: canAddCoffee ? _addCoffee : null,
+                    child: const Text("Add Coffee"),
+                  ),
                 ),
               ],
-
-              //amount (spoon/sachet/capsule)
-              const SizedBox(height: 12),
-              Text(
-                "Time : ",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              //time pick
-              InkWell(
-                onTap: _pickTime,
-                borderRadius: BorderRadius.circular(18),
-
-                child: Container(
-                  width: 330,
-                  height: 65,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3A291F),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        selectedTime == null
-                            ? "Select time"
-                            : selectedTime!.format(context),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      const Icon(
-                        Icons.access_time,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: canAddCoffee ? _addCoffee : null,
-                  child: const Text("Add Coffee"),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _prepCard(String prep) {
-    return SelectionCard(
-      label: prep,
-      selected: selectedPrep == prep,
+  Widget _customField({
+    required TextEditingController controller,
+    required String label,
+    required TextInputType keyboardType,
+    String? errorText,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: Colors.white, fontSize: 16),
+      onChanged: (_) => setState(() {}),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white70),
+        errorText: errorText,
+        filled: true,
+        fillColor: const Color(0xFF3A291F),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 18,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Colors.white54),
+        ),
+      ),
+    );
+  }
 
+  Widget _prepCard(HomePrep prep) {
+    return SelectionCard(
+      label: prep.label,
+      selected: selectedPrep == prep,
       onTap: () {
         setState(() {
-          if (selectedPrep == prep) {
-            selectedPrep = null;
-            selectedBrand = null;
-          } else {
-            selectedPrep = prep;
+          selectedPrep = selectedPrep == prep ? null : prep;
 
-            //reset previous brand
-            selectedBrand = null;
-          }
+          // brands and units differ per prep, so reset both
+          selectedBrand = null;
+          selectedAmount = null;
+          _customNameController.clear();
+          _customMgController.clear();
         });
       },
     );
@@ -280,15 +316,31 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
       return;
     }
 
-    final int calculatedCaffeineMg = CaffeineCalculator.calculateHomeCoffee(
-      prep: selectedPrep!,
-      brand: selectedBrand!,
-      amount: selectedAmount!,
-    );
+    final HomePrep prep = selectedPrep!;
+    final bool isCustom = _isCustom;
 
+    if (isCustom && !_customValid) return;
+
+    //brand name to save
+    final String typeName = _customNameController.text.trim();
+    final String brandToSave = !isCustom
+        ? selectedBrand!
+        : (typeName.isEmpty ? CaffeineCalculator.customBrand : typeName);
+
+    // Convert UI unit (tsp / tbsp) into what the calculator expects (grams)
+    final int calculatedCaffeineMg = isCustom
+        ? CaffeineCalculator.calcCustom(
+            mgPerUnit: _customMg!,
+            amount: selectedAmount!.toDouble(),
+          )
+        : CaffeineCalculator.calculateHomeCoffee(
+            prep: prep,
+            brand: brandToSave,
+            amount: selectedAmount! * prep.amountMultiplier,
+          );
     final DateTime now = DateTime.now();
 
-    final DateTime consumedAt = DateTime(
+    DateTime consumedAt = DateTime(
       now.year,
       now.month,
       now.day,
@@ -296,16 +348,22 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
       selectedTime!.minute,
     );
 
+    // If the chosen time is later than now, it must be from yesterday
+    if (consumedAt.isAfter(now)) {
+      consumedAt = consumedAt.subtract(const Duration(days: 1));
+    }
+
     final CaffeineLog log = CaffeineLog.home(
-      preparation: selectedPrep!,
-      brand: selectedBrand!,
-      quantity: selectedAmount!,
+      preparation: prep.label, // readable string for Firestore
+      brand: brandToSave,
+      quantity: selectedAmount!, // what the user actually entered
       caffeineMg: calculatedCaffeineMg,
       consumedAt: consumedAt,
+      isCustom: isCustom,
+      customMgPerUnit: isCustom ? _customMg : null,
     );
 
     try {
-      //save to firebase
       await CoffeeFirestoreService.addCoffeeLog(log);
 
       debugPrint("Home coffee added!");
@@ -315,7 +373,6 @@ class _HomeLogCoffeeState extends State<HomeLogCoffee> {
       debugPrint("Caffeine: ${log.caffeineMg} mg");
       debugPrint("Time: ${log.consumedAt}");
 
-      //make sure page exist
       if (!mounted) return;
 
       Navigator.pushReplacement<void, bool>(

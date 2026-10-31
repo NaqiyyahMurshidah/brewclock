@@ -14,6 +14,9 @@ class CaffeineLog {
   final String? preparation;
   final int? quantity;
 
+  final bool isCustom;
+  final double? customMgPerUnit;
+
   //for both source
   final int caffeineMg;
   final DateTime consumedAt;
@@ -32,6 +35,9 @@ class CaffeineLog {
     this.brand,
     this.preparation,
     this.quantity,
+
+    this.isCustom = false,
+    this.customMgPerUnit,
 
     required this.caffeineMg,
     required this.consumedAt,
@@ -64,12 +70,16 @@ class CaffeineLog {
     required int quantity,
     required int caffeineMg,
     required DateTime consumedAt,
+    bool isCustom = false,
+    double? customMgPerUnit,
   }) {
     return CaffeineLog(
       source: CoffeeSource.home,
       brand: brand,
       preparation: preparation,
       quantity: quantity,
+      isCustom: isCustom,
+      customMgPerUnit: customMgPerUnit,
       caffeineMg: caffeineMg,
       consumedAt: consumedAt,
     );
@@ -78,7 +88,7 @@ class CaffeineLog {
   // Convert object to Map (useful for Firebase)
   Map<String, dynamic> toMap() {
     return {
-       'source': source.name,
+      'source': source.name,
 
       // Cafe
       'drinkName': drinkName,
@@ -93,7 +103,9 @@ class CaffeineLog {
 
       // Common
       'caffeineMg': caffeineMg,
-      'consumedAt': Timestamp.fromDate(consumedAt)
+      'consumedAt': Timestamp.fromDate(consumedAt),
+      'isCustom' : isCustom,
+      if (customMgPerUnit != null) 'customMgPerUnit' : customMgPerUnit,
     };
   }
 
@@ -119,6 +131,8 @@ class CaffeineLog {
       // Common
       caffeineMg: (map['caffeineMg'] as num).toInt(),
       consumedAt: (map['consumedAt'] as Timestamp).toDate(),
+      isCustom: map['isCustom'] as bool? ?? false,
+      customMgPerUnit: (map['customMgPerUnit'] as num?)?.toDouble(),
     );
   }
 }

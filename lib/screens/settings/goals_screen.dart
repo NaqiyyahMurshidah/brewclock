@@ -131,7 +131,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
           _preferredBedtime.hour * 60 + _preferredBedtime.minute;
 
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'caffeineLimit': _caffeineLimit.round(),
+        'caffeineLimit': CaffeineLimitGoalCard.dailyLimitMg,
         'sleepGoal': _sleepGoal,
         'preferredBedTime': bedtimeMinutes,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -196,7 +196,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
                     const SizedBox(height: 25),
 
                     GoalsSummaryCards(
-                      caffeineLimit: _caffeineLimit.round(),
+                      caffeineLimit: CaffeineLimitGoalCard.dailyLimitMg,
                       sleepGoal: _sleepGoal,
                     ),
 
@@ -213,15 +213,16 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
                     const SizedBox(height: 15),
 
-                    CaffeineLimitGoalCard(
-                      caffeineLimit: _caffeineLimit,
-                      onChanged: (value) {
-                        setState(() {
-                          _caffeineLimit = value;
-                        });
-                      },
-                    ),
+                    const CaffeineLimitGoalCard(),
 
+                    // CaffeineLimitGoalCard(
+                    //   caffeineLimit: _caffeineLimit,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       _caffeineLimit = value;
+                    //     });
+                    //   },
+                    // ),
                     const SizedBox(height: 14),
 
                     SleepGoalCard(

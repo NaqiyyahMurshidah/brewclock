@@ -15,16 +15,51 @@ class CafeLogCoffee extends StatefulWidget {
 class _CafeLogCoffeeState extends State<CafeLogCoffee> {
   String? selectedDrink;
   String? selectedSize;
-  int? selectedShots;
+  int? selectedQuantity; // shots or servings, depending on the drink
   TimeOfDay? selectedTime;
+
+  // custom "Other" inputs
+  final TextEditingController _customNameController = TextEditingController();
+  final TextEditingController _customMgController = TextEditingController();
+
+  static const TextStyle _sectionStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 20,
+  );
+
+  @override
+  void dispose() {
+    _customNameController.dispose();
+    _customMgController.dispose();
+    super.dispose();
+  }
+
+  bool get _isCustom => selectedDrink == CaffeineCalculator.customDrink;
+
+  double? get _customMg =>
+      double.tryParse(_customMgController.text.trim().replaceAll(',', '.'));
+
+  bool get _customValid => CaffeineCalculator.isValid(_customMg);
+
+  /// "shot" or "serving" for the selected drink
+  String get _unitText {
+    if (selectedDrink == null || _isCustom) return "serving";
+    return CaffeineCalculator.cafeDrink(selectedDrink!)?.unit.label ??
+        "serving";
+  }
+
+  String _capitalize(String s) =>
+      s.isEmpty ? s : "${s[0].toUpperCase()}${s.substring(1)}";
 
   @override
   Widget build(BuildContext context) {
     final bool canLogCoffee =
         selectedDrink != null &&
         selectedSize != null &&
-        selectedShots != null &&
-        selectedTime != null;
+        selectedQuantity != null &&
+        selectedTime != null &&
+        (!_isCustom || _customValid);
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A1411),
       appBar: AppBar(
@@ -40,449 +75,95 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
             padding: const EdgeInsets.all(24),
             child: ListView(
               children: [
-                //page header here
                 const SizedBox(height: 10),
 
-                Text(
-                  "Pick a drink : ",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-
+                const Text("Pick a drink : ", style: _sectionStyle),
                 const SizedBox(height: 10),
 
-                //drink card 1 layer
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Espresso",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Espresso",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Espresso"
-                                ? null
-                                : "Espresso";
-                          });
-                        },
-                      ),
+                // Drink cards, two per row, built from the calculator table
+                ..._buildDrinkRows(),
+
+                // Custom inputs
+                if (_isCustom) ...[
+                  const SizedBox(height: 6),
+                  _customField(
+                    controller: _customNameController,
+                    label: "Drink name (optional)",
+                    keyboardType: TextInputType.text,
+                  ),
+                  const SizedBox(height: 12),
+                  _customField(
+                    controller: _customMgController,
+                    label: "Caffeine per serving (mg)",
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Double Espresso",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Double Espresso",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Double Espresso"
-                                ? null
-                                : "Double Espresso";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Latte",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Latte",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Latte"
-                                ? null
-                                : "Latte";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Cappuccino",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Cappuccino",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Cappuccino"
-                                ? null
-                                : "Cappuccino";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Americano",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Americano",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Americano"
-                                ? null
-                                : "Americano";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Flat White",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Flat White",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Flat White"
-                                ? null
-                                : "Flat White";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Mocha",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Mocha",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Mocha"
-                                ? null
-                                : "Mocha";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Macchiato",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Macchiato",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Macchiato"
-                                ? null
-                                : "Macchiato";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Caramel Macchiato",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Caramel Macchiato",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Caramel Macchiato"
-                                ? null
-                                : "Caramel Macchiato";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "White Coffee",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "White Coffee",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "White Coffee"
-                                ? null
-                                : "White Coffee";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Vanilla Latte",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Vanilla Latte",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Vanilla Latte"
-                                ? null
-                                : "Vanilla Latte";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "French Vanilla",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "French Vanilla",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "French Vanilla"
-                                ? null
-                                : "French Vanilla";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Long Black",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Long Black",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Long Black"
-                                ? null
-                                : "Long Black";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Cham",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Cham",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Cham"
-                                ? null
-                                : "Cham";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Pour Over",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Pour Over",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Pour Over"
-                                ? null
-                                : "Pour Over";
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Kopi Peng",
-                        value: 110,
-                        unit: "mg",
-                        selected: selectedDrink == "Kopi Peng",
-                        onTap: () {
-                          setState(() {
-                            selectedDrink = selectedDrink == "Kopi Peng"
-                                ? null
-                                : "Kopi Peng";
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                    errorText:
+                        _customMgController.text.trim().isNotEmpty &&
+                            !_customValid
+                        ? "Enter a value between 1 and "
+                              "${CaffeineCalculator.maxPerUnit.toInt()} mg"
+                        : null,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Check the cafe menu or packaging, or enter your best estimate.",
+                    style: TextStyle(color: Colors.white54, fontSize: 13),
+                  ),
+                ],
 
                 const SizedBox(height: 20),
 
-                //pick size
-                Text(
-                  "Size : ",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-
+                // Size (saved to the log; does not change the caffeine)
+                const Text("Size : ", style: _sectionStyle),
                 const SizedBox(height: 10),
-                //select size
+
                 Row(
                   children: [
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Small",
-                        value: 4,
-                        unit: "oz",
-                        selected: selectedSize == "Small",
-                        onTap: () {
-                          setState(() {
-                            selectedSize = selectedSize == "Small"
-                                ? null
-                                : "Small";
-                          });
-                        },
-                      ),
-                    ),
-
+                    Expanded(child: _sizeCard("Small", 4)),
                     const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Medium",
-                        value: 8,
-                        unit: "oz",
-                        selected: selectedSize == "Medium",
-                        onTap: () {
-                          setState(() {
-                            selectedSize = selectedSize == "Medium"
-                                ? null
-                                : "Medium";
-                          });
-                        },
-                      ),
-                    ),
-
+                    Expanded(child: _sizeCard("Medium", 8)),
                     const SizedBox(width: 12),
-
-                    Expanded(
-                      child: SelectionCard(
-                        label: "Large",
-                        value: 12,
-                        unit: "oz",
-                        selected: selectedSize == "Large",
-                        onTap: () {
-                          setState(() {
-                            selectedSize = selectedSize == "Large"
-                                ? null
-                                : "Large";
-                          });
-                        },
-                      ),
-                    ),
+                    Expanded(child: _sizeCard("Large", 12)),
                   ],
                 ),
+
+                // Quantity (shots or servings)
+                if (selectedDrink != null) ...[
+                  const SizedBox(height: 20),
+                  Text("${_capitalize(_unitText)} : ", style: _sectionStyle),
+                  const SizedBox(height: 10),
+
+                  Row(
+                    children: [
+                      Expanded(child: _quantityBox(1)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _quantityBox(2)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _quantityBox(3)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _quantityBox(4)),
+                    ],
+                  ),
+                ],
 
                 const SizedBox(height: 20),
 
-                //pick shots
-                Text(
-                  "Shot : ",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(child: _shotBox(1)),
-                    const SizedBox(width: 12),
-
-                    Expanded(child: _shotBox(2)),
-                    const SizedBox(width: 12),
-
-                    Expanded(child: _shotBox(3)),
-                    const SizedBox(width: 12),
-
-                    Expanded(child: _shotBox(4)),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                //pick time
-                Text(
-                  "Time : ",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-
+                // Time
+                const Text("Time : ", style: _sectionStyle),
                 const SizedBox(height: 10),
 
                 InkWell(
                   onTap: _pickTime,
                   borderRadius: BorderRadius.circular(18),
-
                   child: Container(
-                    width: 330,
+                    width: double.infinity,
                     height: 65,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-
                     decoration: BoxDecoration(
                       color: const Color(0xFF3A291F),
                       borderRadius: BorderRadius.circular(18),
                     ),
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -496,7 +177,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-
                         const Icon(
                           Icons.access_time,
                           color: Colors.white,
@@ -507,7 +187,7 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
                   ),
                 ),
 
-                //submit button
+                // Submit
                 const SizedBox(height: 30),
 
                 SizedBox(
@@ -515,17 +195,14 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
                   height: 35,
                   child: ElevatedButton(
                     onPressed: canLogCoffee ? _addCoffee : null,
-
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD8B17B),
                       foregroundColor: const Color(0xFF1A1411),
-
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
                       elevation: 0,
                     ),
-
                     child: const Text(
                       "Add Coffee",
                       style: TextStyle(
@@ -543,16 +220,172 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
     );
   }
 
+  // ---------- drink grid ----------
+
+  List<Widget> _buildDrinkRows() {
+    final List<String> names = CaffeineCalculator.cafeDrinkNamesWithCustom;
+    final List<Widget> rows = [];
+
+    for (int i = 0; i < names.length; i += 2) {
+      final bool hasSecond = i + 1 < names.length;
+
+      rows.add(
+        Row(
+          children: [
+            Expanded(child: _drinkCard(names[i])),
+            const SizedBox(width: 12),
+            Expanded(
+              child: hasSecond ? _drinkCard(names[i + 1]) : const SizedBox(),
+            ),
+          ],
+        ),
+      );
+      rows.add(const SizedBox(height: 10));
+    }
+
+    return rows;
+  }
+
+  Widget _drinkCard(String name) {
+    final CafeDrink? data = CaffeineCalculator.cafeDrink(name);
+
+    void onTap() {
+      setState(() {
+        selectedDrink = selectedDrink == name ? null : name;
+
+        // pre-fill the quantity (e.g. Flat White = 2 shots)
+        selectedQuantity = (selectedDrink == null || data == null)
+            ? null
+            : data.defaultQuantity;
+
+        _customNameController.clear();
+        _customMgController.clear();
+      });
+    }
+
+    // "Other" has no fixed caffeine value to show
+    if (data == null) {
+      return SelectionCard(
+        label: name,
+        selected: selectedDrink == name,
+        onTap: onTap,
+      );
+    }
+
+    return SelectionCard(
+      label: name,
+      value: data.mgPerUnit * data.defaultQuantity,
+      unit: "mg",
+      selected: selectedDrink == name,
+      onTap: onTap,
+    );
+  }
+
+  Widget _sizeCard(String label, int oz) {
+    return SelectionCard(
+      label: label,
+      value: oz,
+      unit: "oz",
+      selected: selectedSize == label,
+      onTap: () {
+        setState(() {
+          selectedSize = selectedSize == label ? null : label;
+        });
+      },
+    );
+  }
+
+  Widget _quantityBox(int quantity) {
+    final bool isSelected = selectedQuantity == quantity;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        setState(() {
+          selectedQuantity = selectedQuantity == quantity ? null : quantity;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 50,
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFD8B17B) : const Color(0xFF3A291F),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Center(
+          child: Text(
+            "${quantity}x",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isSelected ? const Color(0xFF1A1411) : Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _customField({
+    required TextEditingController controller,
+    required String label,
+    required TextInputType keyboardType,
+    String? errorText,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: Colors.white, fontSize: 16),
+      onChanged: (_) => setState(() {}),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white70),
+        errorText: errorText,
+        filled: true,
+        fillColor: const Color(0xFF3A291F),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 18,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Colors.white54),
+        ),
+      ),
+    );
+  }
+
+  // ---------- actions ----------
+
+  Future<void> _pickTime() async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+    }
+  }
+
   Future<void> _addCoffee() async {
-    //check
     if (selectedDrink == null ||
         selectedSize == null ||
-        selectedShots == null ||
+        selectedQuantity == null ||
         selectedTime == null) {
       return;
     }
 
-    //convert selected size into OZ
+    final bool isCustom = _isCustom;
+    if (isCustom && !_customValid) return;
+
+    // convert selected size into oz
     final int sizeOz = switch (selectedSize!) {
       "Small" => 4,
       "Medium" => 8,
@@ -560,18 +393,28 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       _ => 0,
     };
 
-    //caffeine calculation (might changes):
-    //63mg for each espresso shots
-    final int calculatedCaffeineMg = CaffeineCalculator.calculateCafeCoffee(
-      drink: selectedDrink!,
-      size: selectedSize!,
-      shots: selectedShots!,
-    );
+    // caffeine: custom = mg per serving x servings,
+    // otherwise table value per shot / serving x quantity
+    final int calculatedCaffeineMg = isCustom
+        ? CaffeineCalculator.calcCustom(
+            mgPerUnit: _customMg!,
+            amount: selectedQuantity!.toDouble(),
+          )
+        : CaffeineCalculator.calculateCafeCoffee(
+            drink: selectedDrink!,
+            quantity: selectedQuantity!,
+          );
 
-    //combine today's date with the time selected
+    // drink name to save
+    final String typedName = _customNameController.text.trim();
+    final String drinkToSave = !isCustom
+        ? selectedDrink!
+        : (typedName.isEmpty ? CaffeineCalculator.customDrink : typedName);
+
+    // combine today's date with the selected time
     final DateTime now = DateTime.now();
 
-    final DateTime consumedAt = DateTime(
+    DateTime consumedAt = DateTime(
       now.year,
       now.month,
       now.day,
@@ -579,34 +422,36 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       selectedTime!.minute,
     );
 
-    //create actual log using user's selection
+    // a time later than now must be from yesterday
+    if (consumedAt.isAfter(now)) {
+      consumedAt = consumedAt.subtract(const Duration(days: 1));
+    }
+
     final CaffeineLog log = CaffeineLog(
       source: CoffeeSource.cafe,
-      drinkName: selectedDrink!,
+      drinkName: drinkToSave,
       size: selectedSize!,
       sizeOz: sizeOz,
-      shots: selectedShots!,
+      shots: selectedQuantity!, // shots or servings
       caffeineMg: calculatedCaffeineMg,
       consumedAt: consumedAt,
+      isCustom: isCustom,
+      customMgPerUnit: isCustom ? _customMg : null,
     );
 
-    //save locally
     try {
-      //Save to Firestore
       await CoffeeFirestoreService.addCoffeeLog(log);
 
       debugPrint("Coffee added successfully");
       debugPrint("Drink: ${log.drinkName}");
       debugPrint("Size: ${log.size}");
       debugPrint("Size oz: ${log.sizeOz}");
-      debugPrint("Shots: ${log.shots}");
+      debugPrint("Quantity: ${log.shots}");
       debugPrint("Caffeine: ${log.caffeineMg} mg");
       debugPrint("Consumed at: ${log.consumedAt}");
 
-      // Make sure page still exists
       if (!mounted) return;
 
-      //Go to Done Log screen
       Navigator.pushReplacement<void, bool>(
         context,
         MaterialPageRoute(
@@ -625,50 +470,6 @@ class _CafeLogCoffeeState extends State<CafeLogCoffee> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Failed to save coffee: $error")));
-    }
-  }
-
-  Widget _shotBox(int shots) {
-    final bool isSelected = selectedShots == shots;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: () {
-        setState(() {
-          selectedShots = selectedShots == shots ? null : shots;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: 50,
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFD8B17B) : const Color(0xFF3A291F),
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Center(
-          child: Text(
-            "${shots}x",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isSelected ? const Color(0xFF1A1411) : Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickTime() async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: selectedTime ?? TimeOfDay.now(),
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = pickedTime;
-      });
     }
   }
 }

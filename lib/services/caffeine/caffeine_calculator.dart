@@ -1,5 +1,28 @@
 enum HomePrep { sachet, instant, ground, capsule, espresso }
 
+enum CafeUnit { shot, serving }
+
+//cafe log part
+extension CafeUnitInfo on CafeUnit {
+  String get label => switch (this) {
+    CafeUnit.shot => "shot",
+    CafeUnit.serving => "serving",
+  };
+}
+
+class CafeDrink {
+  final int mgPerUnit;
+  final CafeUnit unit;
+  final int defaultQuantity;
+
+  const CafeDrink(
+    this.mgPerUnit, {
+    this.unit = CafeUnit.shot,
+    this.defaultQuantity = 1,
+  });
+}
+
+// home log part
 class _HomeProduct {
   final int mg;
   final double perUnit;
@@ -7,15 +30,48 @@ class _HomeProduct {
 }
 
 class CaffeineCalculator {
-  //cafe intake
+  //cafe intake 1 shot = 63 mg | estimate = mg/unit x quantity
   static const int caffeinePerShot = 63;
+
+  static const Map<String, CafeDrink> _cafeDrinks = {
+    //espresso based (count in shots)
+    "Americano": CafeDrink(caffeinePerShot),
+    "Cappuccino": CafeDrink(caffeinePerShot),
+    "Caramel Macchiato": CafeDrink(caffeinePerShot),
+    "Espresso": CafeDrink(caffeinePerShot),
+    "Double Espresso": CafeDrink(caffeinePerShot, defaultQuantity: 2),
+    "Flat White": CafeDrink(caffeinePerShot, defaultQuantity: 2),
+    "Latte": CafeDrink(caffeinePerShot),
+    "Mocha": CafeDrink(caffeinePerShot),
+    "Vanilla Latte": CafeDrink(caffeinePerShot),
+    "French Vanilla": CafeDrink(caffeinePerShot),
+    "Long Black": CafeDrink(caffeinePerShot),
+    "Cham": CafeDrink(caffeinePerShot),
+
+    // not shot-based (counted in servings)
+    "White Coffee": CafeDrink(100, unit: CafeUnit.serving),
+    "Pour Over": CafeDrink(120, unit: CafeUnit.serving),
+    "Kopi Peng": CafeDrink(100, unit: CafeUnit.serving),
+    "Cold Brew": CafeDrink(150, unit: CafeUnit.serving),
+  };
+
+  //drink name for cafe
+  static List<String> get cafeDrinkNames => _cafeDrinks.keys.toList();
+
+  //label of
 
   static int calculateCafeCoffee({
     required String drink,
-    required String size,
-    required int shots,
+    required int quantity,
   }) {
-    return caffeinePerShot * shots;
+    if (quantity <= 0) return 0;
+
+    final CafeDrink? data = _cafeDrinks[drink];
+    if (data == null) {
+      throw ArgumentError('Unknown cafe drink "$drink"');
+    }
+
+    return data.mgPerUnit * quantity;
   }
 
   //home intake
@@ -73,7 +129,9 @@ class CaffeineCalculator {
       _homeData[prep]?.keys.toList() ?? [];
 
   //---for custom caffeine intake ---//
-  static const String customBrand = "Other";
+
+  //--home custom
+  static const String customBrand = "Other"; //for home
   static const double maxPerUnit = 300; //how much limit user can put
 
   static bool isValid(double? mg) => mg != null && mg > 0 && mg <= maxPerUnit;
@@ -85,6 +143,20 @@ class CaffeineCalculator {
     }
     return (mgPerUnit * amount).round();
   }
+
+  //--cafe custom
+  static const String customDrink = "Other";
+
+  //ready for the UI
+  static List<String> get cafeDrinkNamesWithCustom => [
+    ..._cafeDrinks.keys,
+    customDrink,
+  ];
+
+  /// Details for one drink (unit, default quantity, mg per unit)
+  static CafeDrink? cafeDrink(String drink) => _cafeDrinks[drink];
+
+  ///[quantity] = number of shots or servings, depending on the drink's unit
 }
 
 extension HomePrepInfo on HomePrep {
@@ -92,7 +164,7 @@ extension HomePrepInfo on HomePrep {
     HomePrep.sachet => "Coffee Sachet",
     HomePrep.instant => "Instant Coffee",
     HomePrep.ground => "Ground Coffee",
-    HomePrep.capsule => "COffee Capsule",
+    HomePrep.capsule => "Coffee Capsule",
     HomePrep.espresso => "Espresso Machine",
   };
 

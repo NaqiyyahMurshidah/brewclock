@@ -31,7 +31,7 @@ class TopDrinkCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "Avg Caffeine : ",
+                  "Avg Caffeine Intake : ",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -58,7 +58,7 @@ class TopDrinkCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 10),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
